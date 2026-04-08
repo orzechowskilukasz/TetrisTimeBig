@@ -1,0 +1,62 @@
+{
+    "author": "Originally vflashm, ported to Pebble Time 2 by Lukasz Orzechowski",
+    "dependencies": {},
+    "keywords": [],
+    "name": "tetristimebig",
+    "pebble": {
+        "capabilities": [
+            "configurable"
+        ],
+        "displayName": "TetrisTimeBig",
+        "enableMultiJS": false,
+        "messageKeys": {
+            "ANIMATE_SECOND_DOT": 2,
+            "CUSTOM_ANIMATIONS": 21,
+            "CUSTOM_ANIMATION_DATE_PERIOD_FRAMES": 26,
+            "CUSTOM_ANIMATION_PERIOD_COUNT": 25,
+            "CUSTOM_ANIMATION_PERIOD_INVIS_FRAMES": 24,
+            "CUSTOM_ANIMATION_PERIOD_VIS_FRAMES": 23,
+            "CUSTOM_ANIMATION_TETRIMINO_AGE_STEP_FRAMES": 27,
+            "CUSTOM_ANIMATION_TIMEOUT_MS": 22,
+            "CUSTOM_DATE": 15,
+            "CUSTOM_DATE_LINE_SPACING": 20,
+            "CUSTOM_DATE_WORD_SPACING": 19,
+            "CUSTOM_TIME_DATE_SPACING_1": 17,
+            "CUSTOM_TIME_DATE_SPACING_2": 18,
+            "CUSTOM_TIME_OFFSET": 16,
+            "DATE_FIRST_WEEKDAY": 7,
+            "DATE_MODE": 4,
+            "DATE_MONTH_FORMAT": 5,
+            "DATE_WEEKDAY_FORMAT": 6,
+            "ICON_BATTERY": 9,
+            "ICON_CONNECTION": 8,
+            "LARGE_DATE_FONT": 14,
+            "LIGHT_THEME": 1,
+            "NOTIFICATION_CONNECTED": 11,
+            "NOTIFICATION_DISCONNECTED": 10,
+            "NOTIFICATION_HOURLY": 13,
+            "SKIP_INITIAL_ANIMATION": 12,
+            "VERSION": 0
+        },
+        "projectType": "native",
+        "resources": {
+            "media": [
+                {
+                    "file": "images/icon25.png",
+                    "menuIcon": true,
+                    "name": "IMAGE_MENU_ICON",
+                    "type": "png"
+                }
+            ]
+        },
+        "sdkVersion": "3",
+        "targetPlatforms": [
+            "emery"
+        ],
+        "uuid": "5ae98212-a15a-4e5b-989e-e78849c4d3f7",
+        "watchapp": {
+            "watchface": true
+        }
+    },
+    "version": "3.2.0"
+}
