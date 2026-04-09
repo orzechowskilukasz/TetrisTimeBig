@@ -2,7 +2,7 @@
 #define FIELD_HEIGHT 41
 #define FIELD_CELL_SIZE 3
 #define FIELD_CELL_SPACING 2
-#define FIELD_OFFSET_X 1
+#define FIELD_OFFSET_X 5
 #define FIELD_OFFSET_Y 1
 
 static bool s_field_inited;
