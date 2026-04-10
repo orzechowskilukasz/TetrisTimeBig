@@ -1,3 +1,10 @@
+#if defined(PBL_PLATFORM_EMERY)  // Time 2
+    #define X_TIME_OFFSET 5
+#else                            // All other supported devices (not round)
+    #define X_TIME_OFFSET -1
+#endif
+
+
 #include <pebble.h>
 #include "assert.h"
 #include "digit.h"
@@ -11,7 +18,7 @@
 #define ANIMATION_SPACING_Y (TETRIMINO_MASK_SIZE + 1)
 #define MAX_TETRIMINO_AGE_STEPS 3
 #define MAX_TETRIMINO_AGE (MAX_TETRIMINO_AGE_STEPS * s_settings[CUSTOM_ANIMATION_TETRIMINO_AGE_STEP_FRAMES])
-#define X_TIME_OFFSET 5
+
 
 // debug settings
 #define DYNAMIC_ASSEMBLY 0

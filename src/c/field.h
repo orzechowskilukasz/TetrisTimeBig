@@ -1,9 +1,19 @@
-#define FIELD_WIDTH 45
-#define FIELD_HEIGHT 41
-#define FIELD_CELL_SIZE 3
-#define FIELD_CELL_SPACING 2
-#define FIELD_OFFSET_X -14
-#define FIELD_OFFSET_Y 0
+#if defined(PBL_PLATFORM_EMERY)  // Time 2
+    #define FIELD_WIDTH 45
+    #define FIELD_HEIGHT 41
+    #define FIELD_CELL_SIZE 3
+    #define FIELD_CELL_SPACING 2
+    #define FIELD_OFFSET_X -14
+    #define FIELD_OFFSET_Y 0
+#else                            // All other supported devices (not round)
+    #define FIELD_WIDTH 36
+    #define FIELD_HEIGHT 42
+    #define FIELD_CELL_SIZE 3
+    #define FIELD_CELL_SPACING 1
+    #define FIELD_OFFSET_X 0
+    #define FIELD_OFFSET_Y 1
+#endif
+
 
 static bool s_field_inited;
 static GColor s_field_bg_color;
