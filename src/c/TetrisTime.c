@@ -11,6 +11,7 @@
 #define ANIMATION_SPACING_Y (TETRIMINO_MASK_SIZE + 1)
 #define MAX_TETRIMINO_AGE_STEPS 3
 #define MAX_TETRIMINO_AGE (MAX_TETRIMINO_AGE_STEPS * s_settings[CUSTOM_ANIMATION_TETRIMINO_AGE_STEP_FRAMES])
+#define X_TIME_OFFSET 5
 
 // debug settings
 #define DYNAMIC_ASSEMBLY 0
@@ -519,7 +520,7 @@ static void tick_handler(struct tm* tick_time, TimeUnits units_changed) {
         bool changed = false;
         for (int i = 0; i < STATE_COUNT; ++i) {
             const int value = digit_values[i];
-            const int offset = digit_offsets[i];
+            const int offset = X_TIME_OFFSET + digit_offsets[i];
             if (s_states[i].next_value != value || s_states[i].next_offset_x != offset) {
                 s_states[i].next_value = value;
                 s_states[i].next_offset_x = offset;

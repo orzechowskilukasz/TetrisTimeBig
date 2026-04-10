@@ -1,5 +1,5 @@
 {
-    "author": "Originally vflashm, ported to Pebble Time 2 by Lukasz Orzechowski",
+    "author": "Lukasz Orzechowski",
     "dependencies": {},
     "keywords": [],
     "name": "tetristimebig",
@@ -53,7 +53,7 @@
         "targetPlatforms": [
             "emery"
         ],
-        "uuid": "5ae98212-a15a-4e5b-989e-e78849c4d3f7",
+        "uuid": "121b4794-e9e0-47d1-9fc3-9a3e49bda7e0",
         "watchapp": {
             "watchface": true
         }

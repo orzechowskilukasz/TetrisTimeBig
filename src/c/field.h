@@ -1,9 +1,9 @@
-#define FIELD_WIDTH 40
+#define FIELD_WIDTH 45
 #define FIELD_HEIGHT 41
 #define FIELD_CELL_SIZE 3
 #define FIELD_CELL_SPACING 2
-#define FIELD_OFFSET_X 5
-#define FIELD_OFFSET_Y 1
+#define FIELD_OFFSET_X -14
+#define FIELD_OFFSET_Y 0
 
 static bool s_field_inited;
 static GColor s_field_bg_color;
