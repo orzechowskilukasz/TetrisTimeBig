@@ -1,8 +1,25 @@
 #if defined(PBL_PLATFORM_EMERY)  // Time 2
-    #define X_TIME_OFFSET 5
-#else                            // All other supported devices (not round)
-    #define X_TIME_OFFSET -1
+    #define X_TIME_OFFSET 3
 #endif
+#if defined(PBL_PLATFORM_GABBRO) // Time Round 2 
+   #define X_TIME_OFFSET 7
+#endif
+#if defined(PBL_PLATFORM_CHALK)  // Time Round 
+   #define X_TIME_OFFSET 3
+#endif
+#if defined(PBL_PLATFORM_FLINT)  // Below are defaults for legacy devices 
+   #define X_TIME_OFFSET -1
+#endif
+#if defined(PBL_PLATFORM_DIORITE)  // Below are defaults for legacy devices 
+   #define X_TIME_OFFSET -1
+#endif
+#if defined(PBL_PLATFORM_APLITE)  // Below are defaults for legacy devices 
+   #define X_TIME_OFFSET -1
+#endif
+#if defined(PBL_PLATFORM_BASALT)  // Below are defaults for legacy devices 
+   #define X_TIME_OFFSET -1
+#endif
+
 
 
 #include <pebble.h>

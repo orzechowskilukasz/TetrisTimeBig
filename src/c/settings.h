@@ -240,7 +240,7 @@ static void settings_send() {
 
 static void settings_load_persistent() {
     APP_LOG(APP_LOG_LEVEL_INFO, "Reading persistent settings");
-    Settings new_settings;
+    Settings new_settings = {0};  // LO: clean initiation to avoid random garbage
     for (int i = 0; i < MAX_KEY; ++i) {
         if (settings_is_active(new_settings, i) && persist_exists(i)) {
             new_settings[i] = persist_read_int(i);
@@ -275,7 +275,7 @@ static void settings_read(DictionaryIterator* iter)
             switch (t->type) {
             case TUPLE_UINT:
             case TUPLE_INT:
-                new_settings[t->key] = t->value->int8;
+                new_settings[t->key] = t->value->int32;
                 //APP_LOG(APP_LOG_LEVEL_INFO, "Read %d=%d", (int)t->key, new_settings[t->key]);
                 break;
             default:
