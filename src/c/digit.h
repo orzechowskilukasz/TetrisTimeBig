@@ -1,13 +1,19 @@
+#if defined(PBL_PLATFORM_EMERY)  // Time 2  - this approprietly aligns vertically the bottom part with date 
+    #define DIGIT_HEIGHT 13 
+#else 
+    #define DIGIT_HEIGHT 10 
+#endif
+
+
 #include "pebble.h"
 #include "tetrimino.h"
-  
-#define DIGIT_MAX_TETRIMINOS 16
-#define DIGIT_WIDTH 6
-#define DIGIT_HEIGHT 10
-#define DIGIT_COUNT 11
 
-#define USE_RAW_DIGITS 0
-  
+#define DIGIT_MAX_TETRIMINOS 16 
+#define DIGIT_WIDTH 6  
+#define DIGIT_COUNT 11  
+
+#define USE_RAW_DIGITS 0  
+
 typedef struct {
     char letter;
     uint8_t rotation;

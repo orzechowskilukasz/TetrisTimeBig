@@ -1,5 +1,5 @@
 #if defined(PBL_PLATFORM_EMERY)  // Time 2
-    #define X_TIME_OFFSET 3
+    #define X_TIME_OFFSET 4
 #endif
 #if defined(PBL_PLATFORM_GABBRO) // Time Round 2 
    #define X_TIME_OFFSET 7
