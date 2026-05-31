@@ -1,11 +1,21 @@
-#if defined(PBL_PLATFORM_EMERY)  // Time 2
+#if defined(PBL_PLATFORM_EMERY)  // Time 2 bolder letters, nice I think
     #define FIELD_WIDTH 45
     #define FIELD_HEIGHT 48
-    #define FIELD_CELL_SIZE 3
-    #define FIELD_CELL_SPACING 2
-    #define FIELD_OFFSET_X -14
-    #define FIELD_OFFSET_Y 0
-#endif
+    #define FIELD_CELL_SIZE 4
+    #define FIELD_CELL_SPACING 1
+    #define FIELD_OFFSET_X -12
+    #define FIELD_OFFSET_Y -2
+#endif 
+
+/* #if defined(PBL_PLATFORM_EMERY)  // Time 2 Bold and Big digits, maybe a little too big
+    #define FIELD_WIDTH 33
+    #define FIELD_HEIGHT 42
+    #define FIELD_CELL_SIZE 5
+    #define FIELD_CELL_SPACING 1
+    #define FIELD_OFFSET_X 1
+    #define FIELD_OFFSET_Y -24
+#endif */
+
 #if defined(PBL_PLATFORM_FLINT)                  
     #define FIELD_WIDTH 36
     #define FIELD_HEIGHT 42

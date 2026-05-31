@@ -1,9 +1,8 @@
 #if defined(PBL_PLATFORM_EMERY)  // Time 2  - this approprietly aligns vertically the bottom part with date 
-    #define DIGIT_HEIGHT 13 
+    #define DIGIT_HEIGHT 13 // 13
 #else 
     #define DIGIT_HEIGHT 10 
 #endif
-
 
 #include "pebble.h"
 #include "tetrimino.h"
@@ -125,7 +124,178 @@ static void reorder_digit(DigitDef* dst, const DigitDef* src) {
 }
 
 #if USE_RAW_DIGITS == 1
-  
+
+
+#if defined(PBL_PLATFORM_EMERY)  // Time 2
+
+static RawDigit s_raw_digits[] = {
+    {"tzzjjj",
+     "ttzzsj",
+     "tT  ss",
+     "TT  ts",
+     "sT  tt",
+     "ss  tz",
+     "is  zz",
+     "it  zj",
+     "sT  tt",
+     "ss  tz",
+     "is  zz",
+     "it  zj",
+     "ittssj",
+     "itssjj"},
+    
+    {"    LL",
+     "    lL",
+     "  lllL",
+     "  iiii",
+     "    oo",
+     "    oo",
+     "    oo",
+     "    oo",
+     "    LL",
+     "    lL",
+     "    LL",
+     "    lL",
+     "    lL",
+     "    ll"},
+    
+    {"llljjj",
+     "liiiij",
+     "    oo",
+     "    oo",
+     "    oo",
+     "    oo",
+     "llljjj",
+     "liiiij",
+     "oo    ",
+     "oo    ",
+     "oo    ",
+     "oo    ",
+     "jiiiil",
+     "jjjlll"},
+    
+    {"llljjj",
+     "liiiij",
+     "    LL",
+     "    lL",
+     "    LL",
+     "    lL",
+     "  lllL",
+     "  IIII",
+     "    Ji",
+     "    Ji", 
+     "    Ji",
+     "    Ji",
+     "oojJJi",
+     "oojjji"},
+
+    {"OO  LL",
+     "OO  lL",
+     "oo  lL",
+     "oo  ll",    
+     "oo  lL",
+     "oo  ll",
+     "llljjj",
+     "liiiij",
+     "    JJ",
+     "    Jj",
+     "    JJ",
+     "    Jj", 
+     "    Jj",
+     "    jj"},
+
+    {"llljjj",
+     "liiiij",
+     "oo    ",
+     "oo    ",
+     "oo    ",
+     "oo    ",
+     "llljjj",
+     "liiiij",
+     "    oo",
+     "    oo",
+     "    oo",
+     "    oo",
+     "jiiiil",
+     "jjjlll"},
+
+    {"llljjj",
+     "liiiij",
+     "oo    ",
+     "oo    ",
+     "oo    ",
+     "oo    ",
+     "TTTsst",
+     "tTsstt",
+     "tt  st",
+     "tJ  ss",
+     "tt  st",
+     "tJ  ss",
+     "jJJJts",
+     "jjjttt"},
+
+    {"llljjj",
+     "liiiij",
+     "    LL",
+     "    lL",
+     "    lL",
+     "    lL",
+     "    lL",
+     "    ll",
+     "    JJ",
+     "    ll",
+     "    JJ",
+     "    Jj",
+     "    Jj",
+     "    jj"},
+
+    {"stttss",
+     "sstsst",
+     "Ts  tt",
+     "TT  lt",
+     "Ts  tt",
+     "TT  lt",
+     "Tjlllz",
+     "tjjjzz",
+     "tt  zt",
+     "tz  tt",
+     "tt  zt",
+     "tz  tt",
+     "zztzzt",
+     "ztttzz"},
+
+    {"tzzjjj",
+     "ttzztj",
+     "tz  tt",
+     "zz  tl",
+     "tz  tt",
+     "zz  tl",
+     "zsslll",
+     "ssiiii",
+     "    LL",
+     "    lL",
+     "    LL",
+     "    lL",
+     "jJJJlL",
+     "jjjJll"},
+
+    {"      ",
+     "      ",
+     "      ",
+     "      ",
+     "  oo  ",
+     "  oo  ",
+     "      ",
+     "      ",
+     "  oo  ",
+     "  oo  ",
+     "      ",
+     "      ",
+     "      ",
+     "      "},
+};
+
+#else
 static RawDigit s_raw_digits[] = {
     {"tzzjjj",
      "ttzzsj",
@@ -248,6 +418,10 @@ static RawDigit s_raw_digits[] = {
      "      ",
      "      "},
 };
+
+#endif
+
+
 STATIC_ASSERT(ARRAY_SIZE(s_digits) == DIGIT_COUNT);
 
 static int match_mask(RawDigit* raw, const TetriminoMask* mask, int mask_size, int pos_x, int pos_y, char letter, int clear) {
