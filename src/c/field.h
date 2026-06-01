@@ -1,9 +1,9 @@
 #if defined(PBL_PLATFORM_EMERY)  // Time 2 bolder letters, nice I think
-    #define FIELD_WIDTH 45
+    #define FIELD_WIDTH 40 // 45
     #define FIELD_HEIGHT 48
     #define FIELD_CELL_SIZE 4
     #define FIELD_CELL_SPACING 1
-    #define FIELD_OFFSET_X -12
+    #define FIELD_OFFSET_X 0
     #define FIELD_OFFSET_Y -2
 #endif 
 
