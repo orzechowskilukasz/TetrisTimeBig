@@ -748,6 +748,15 @@ static const Bitmap s_weather_foggy = {
     " ####### "
 };
 
+static const Bitmap s_weather_unknown = {
+    9, 5,
+    " #     # "
+    "  #  #   "
+    "   ##    "
+    "  #  #   "
+    " #    #  "
+};
+
 static void draw_bitmap(const Bitmap* bmp, int x, int y, GColor color) {
     int yoffset = 0;
     for (int j = 0; j < bmp->height; ++j) {

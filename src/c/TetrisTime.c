@@ -451,7 +451,7 @@ static void layer_draw(Layer* layer, GContext* ctx) {
 
         // 3. Dynamic Weather Icon Selection
         // Assuming conditions_tuple maps to standard OpenWeatherMap/Pebble weather IDs
-        const Bitmap* weather_icon = &s_weather_storm; // default fallback
+        const Bitmap* weather_icon = &s_weather_unknown; // default fallback
         
         // Example condition parsing mapping (Adjust based on your JS code)
         if (s_weather_condition_id == 0 ) {
@@ -730,25 +730,21 @@ static void on_settings_changed() {
 
 static void in_received_handler(DictionaryIterator* iter, void* context)
 {
-    settings_read(iter);
-    on_settings_changed();
+    Tuple *settings_tuple = dict_find(iter, SKIP_INITIAL_ANIMATION);
+    if (settings_tuple) { 
+        settings_read(iter);
+        on_settings_changed();
+    }
+ 
   
     Tuple *temp_tuple = dict_find(iter, MESSAGE_KEY_TEMPERATURE);
     Tuple *conditions_tuple = dict_find(iter, MESSAGE_KEY_CONDITIONS);
-  
-    if (temp_tuple && conditions_tuple) {
- //   static char temperature_buffer[8];
- //   static char conditions_buffer[32];
- //   static char weather_layer_buffer[42];
-     
-    s_temperature = (int)temp_tuple->value->int32;
-    s_weather_condition_id = (int)conditions_tuple->value->int32;
-
-  //  snprintf(temperature_buffer, sizeof(temperature_buffer), "%d°C", (int)temp_tuple->value->int32);
-  //  snprintf(conditions_buffer, sizeof(conditions_buffer), "%s", conditions_tuple->value->cstring);
-  //  snprintf(weather_layer_buffer, sizeof(weather_layer_buffer), "%s %s", temperature_buffer, conditions_buffer);
-  //  text_layer_set_text(s_weather_layer, weather_layer_buffer);
-  }
+ 
+    
+    if (temp_tuple && conditions_tuple) { 
+        s_temperature = (int)temp_tuple->value->int32;
+        s_weather_condition_id = (int)conditions_tuple->value->int32;
+    }
   
 }
 
@@ -783,27 +779,6 @@ static void main_window_unload(Window* window) {
   
 // Weather
 
-static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
-  
-  Tuple *temp_tuple = dict_find(iterator, MESSAGE_KEY_TEMPERATURE);
-  Tuple *conditions_tuple = dict_find(iterator, MESSAGE_KEY_CONDITIONS);
-
-  if (temp_tuple && conditions_tuple) {
- //   static char temperature_buffer[8];
- //   static char conditions_buffer[32];
- //   static char weather_layer_buffer[42];
- 
-    
-    s_temperature = (int)temp_tuple->value->int32;
-    s_weather_condition_id = (int)conditions_tuple->value->int32;
-
-  //  snprintf(temperature_buffer, sizeof(temperature_buffer), "%d°C", (int)temp_tuple->value->int32);
-  //  snprintf(conditions_buffer, sizeof(conditions_buffer), "%s", conditions_tuple->value->cstring);
-  //  snprintf(weather_layer_buffer, sizeof(weather_layer_buffer), "%s %s", temperature_buffer, conditions_buffer);
-  //  text_layer_set_text(s_weather_layer, weather_layer_buffer);
-  }
-  
-}
 
 static void inbox_dropped_callback(AppMessageResult reason, void *context) {
   APP_LOG(APP_LOG_LEVEL_ERROR, "Message dropped!");
@@ -834,7 +809,6 @@ static void init() {
   
  // Weather 
   
-//    app_message_register_inbox_received(inbox_received_callback);
     app_message_register_inbox_dropped(inbox_dropped_callback);
     app_message_register_outbox_failed(outbox_failed_callback);
     app_message_register_outbox_sent(outbox_sent_callback);
