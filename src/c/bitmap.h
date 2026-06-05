@@ -716,10 +716,20 @@ static const Bitmap s_weather_rainy = {
     9, 5,
     " ####### "
     " ####### "
-    "  # # #  "
-    "   # # # "
-    "  # # #  "
+    "  #   #  "
+    "   #   # "
+    "  #   #  "
 };
+
+static const Bitmap s_weather_showers = {
+    9, 5,
+    " ####### "
+    "  # # #  "
+    " #  #  #  "
+    "#   #  # "
+    "#  #   #  "
+};
+
 
 static const Bitmap s_weather_snowy = {
     9, 5,
@@ -750,11 +760,11 @@ static const Bitmap s_weather_foggy = {
 
 static const Bitmap s_weather_unknown = {
     9, 5,
-    " #     # "
-    "  #  #   "
-    "   ##    "
-    "  #  #   "
-    " #    #  "
+    "        "
+    "  #  #  "
+    "   #    "
+    "  # #   "
+    " #   #  "
 };
 
 static void draw_bitmap(const Bitmap* bmp, int x, int y, GColor color) {

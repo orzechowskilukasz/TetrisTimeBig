@@ -453,24 +453,45 @@ static void layer_draw(Layer* layer, GContext* ctx) {
         // Assuming conditions_tuple maps to standard OpenWeatherMap/Pebble weather IDs
         const Bitmap* weather_icon = &s_weather_unknown; // default fallback
         
-        // Example condition parsing mapping (Adjust based on your JS code)
-        if (s_weather_condition_id == 0 ) {
+        if (s_weather_condition_id == 0 || s_weather_condition_id == 1) {
               weather_icon = &s_weather_sunny;
-          } else if (s_weather_condition_id == 3) {
+          } else if (s_weather_condition_id == 2 || s_weather_condition_id == 3) {
               weather_icon = &s_weather_cloudy;
-          } else if (s_weather_condition_id == 48) {
+          } else if (s_weather_condition_id == 45 || s_weather_condition_id == 48) {
               weather_icon = &s_weather_foggy;
-          } else if (s_weather_condition_id >= 55 && s_weather_condition_id < 68) {
+          } else if (s_weather_condition_id >= 51 && s_weather_condition_id < 68) {
               weather_icon = &s_weather_rainy;
-          } else if (s_weather_condition_id == 75 || s_weather_condition_id == 77 || s_weather_condition_id == 86) {
+          } else if (s_weather_condition_id >= 71 && s_weather_condition_id < 78) {
                 weather_icon = &s_weather_snowy;
-          } else if (s_weather_condition_id == 82) {
-              weather_icon = &s_weather_rainy;
-          } else if (s_weather_condition_id == 95 || s_weather_condition_id == 99 ) {
+          } else if (s_weather_condition_id >= 80 && s_weather_condition_id < 83) {
+              weather_icon = &s_weather_showers;  // rain showers actually, maybe there should be another icon
+          } else if (s_weather_condition_id >= 95 && s_weather_condition_id < 100 ) {
                 weather_icon = &s_weather_storm;
         } 
         draw_bitmap(weather_icon, position, draw_y, s_fg_color);
-    }
+
+        position += weather_icon->width + 1;
+  // Debug
+  /*
+        if (s_weather_condition_id >= 100) {
+            // Hundreds place
+            bmp = &s_bmp_small_digits[s_weather_condition_id / 100];
+            draw_bitmap(bmp, position, draw_y, s_fg_color);
+            position += bmp->width + 1;
+        }
+        if (s_weather_condition_id >= 10) {
+            // Tens place
+            bmp = &s_bmp_small_digits[(s_weather_condition_id / 10) % 10];
+            draw_bitmap(bmp, position, draw_y, s_fg_color);
+            position += bmp->width + 1;
+        }
+        
+        // Ones place (always drawn)
+        bmp = &s_bmp_small_digits[s_weather_condition_id % 10];
+        draw_bitmap(bmp, position, draw_y, s_fg_color);
+        position += bmp->width + 2; // Extra gap before condition icon
+  */
+   }  // if
   
   /*
   
