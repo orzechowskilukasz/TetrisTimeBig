@@ -190,9 +190,16 @@ static const Bitmap s_bmp_small_digits[] = {
         "###"
         "  #"
         "###"
-    },
+    },    {
+        BMP_SMALL_DIGIT_WIDTH, BMP_SMALL_HEIGHT,
+        "   "
+        "   "
+        "## "
+        "   "
+        "   "
+    },      
 };
-STATIC_ASSERT(ARRAY_SIZE(s_bmp_small_digits) == 10);
+STATIC_ASSERT(ARRAY_SIZE(s_bmp_small_digits) == 11);
 
 static const Bitmap s_small_marked_weekdays[] = {
     { 5, 5,
@@ -686,6 +693,60 @@ static const Bitmap s_battery_charging = {
     "####  "
 };
 
+
+static const Bitmap s_weather_sunny = {
+    9, 5,
+    "   ###   "
+    "  #####  "
+    "  #####  "
+    "  #####  "
+    "   ###   "
+};
+
+static const Bitmap s_weather_cloudy = {
+    9, 5,
+    "   ###   "
+    " ######  "
+    " ####### "
+    " ####### "
+    "  ####   "
+};
+
+static const Bitmap s_weather_rainy = {
+    9, 5,
+    " ####### "
+    " ####### "
+    "  # # #  "
+    "   # # # "
+    "  # # #  "
+};
+
+static const Bitmap s_weather_snowy = {
+    9, 5,
+    "  # # #  "
+    "   ###   "
+    " ####### "
+    "   ###   "
+    "  # # #  "
+};
+
+static const Bitmap s_weather_storm = {
+    9, 5,
+    " ####### "
+    "    ##   "
+    "   ##    "
+    "  ####   "
+    "    #    "
+};
+
+static const Bitmap s_weather_foggy = {
+    9, 5,
+    " ####### "
+    "         "
+    " ####### "
+    "         "
+    " ####### "
+};
 
 static void draw_bitmap(const Bitmap* bmp, int x, int y, GColor color) {
     int yoffset = 0;

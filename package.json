@@ -5,12 +5,14 @@
     "name": "tetristimebig",
     "pebble": {
         "capabilities": [
+            "location",
             "configurable"
         ],
         "displayName": "TetrisTimeBig",
         "enableMultiJS": false,
         "messageKeys": {
             "ANIMATE_SECOND_DOT": 2,
+            "CONDITIONS": 29,
             "CUSTOM_ANIMATIONS": 21,
             "CUSTOM_ANIMATION_DATE_PERIOD_FRAMES": 26,
             "CUSTOM_ANIMATION_PERIOD_COUNT": 25,
@@ -35,8 +37,11 @@
             "NOTIFICATION_CONNECTED": 11,
             "NOTIFICATION_DISCONNECTED": 10,
             "NOTIFICATION_HOURLY": 13,
+            "REQUEST_WEATHER": 30,
             "SKIP_INITIAL_ANIMATION": 12,
-            "VERSION": 0
+            "TEMPERATURE": 28,
+            "VERSION": 0,
+            "WEATHER_ENABLED": 31
         },
         "projectType": "native",
         "resources": {
@@ -64,5 +69,5 @@
             "watchface": true
         }
     },
-    "version": "3.6.1"
+    "version": "3.7.1"
 }

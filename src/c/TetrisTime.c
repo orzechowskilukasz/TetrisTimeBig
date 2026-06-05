@@ -1,5 +1,5 @@
 #if defined(PBL_PLATFORM_EMERY)  // Time 2
-    #define X_TIME_OFFSET 2
+   #define X_TIME_OFFSET 2
 #endif
 #if defined(PBL_PLATFORM_GABBRO) // Time Round 2 
    #define X_TIME_OFFSET 7
@@ -21,7 +21,6 @@
 #endif
 
 
-
 #include <pebble.h>
 #include "assert.h"
 #include "digit.h"
@@ -39,6 +38,10 @@
 
 // debug settings
 #define DYNAMIC_ASSEMBLY 0
+
+// weather state
+static int s_temperature = 999; // 999 acts as an "no data yet" flag
+static int s_weather_condition_id = 0;
 
 typedef struct {
     int8_t offset_x;
@@ -69,7 +72,7 @@ static uint8_t s_weekday;
 static GColor s_bg_color;
 static GColor s_fg_color;
 
-// pebbele infrastructure
+// pebble infrastructure
 static bool s_animating;
 static Window* s_window;
 static Layer* s_layer;
@@ -409,7 +412,94 @@ static void layer_draw(Layer* layer, GContext* ctx) {
             draw_bitmap(bmp, FIELD_WIDTH - bmp->width, 0, s_fg_color);
         }
     }
+
+ // weather test
+  
+  if (s_temperature != 999) { // Only draw if we have received real data
+        const Bitmap* bmp = NULL;
+        int position = 2; // Start X position from the left side
+        int draw_y = 2;   // Y position boundary line
+        
+        int temp_to_draw = s_temperature;
+
+        // 1. Handle Negative Sign
+        if (temp_to_draw < 0) {
+            bmp = &s_bmp_small_digits[10];  // Assuming index 10 is your minus symbol
+            draw_bitmap(bmp, position, draw_y, s_fg_color);
+            position += bmp->width + 1;
+            temp_to_draw = abs(temp_to_draw); // make positive for digit splitting
+        }
+
+        // 2. Split and Draw Digits dynamically
+        if (temp_to_draw >= 100) {
+            // Hundreds place
+            bmp = &s_bmp_small_digits[temp_to_draw / 100];
+            draw_bitmap(bmp, position, draw_y, s_fg_color);
+            position += bmp->width + 1;
+        }
+        if (temp_to_draw >= 10) {
+            // Tens place
+            bmp = &s_bmp_small_digits[(temp_to_draw / 10) % 10];
+            draw_bitmap(bmp, position, draw_y, s_fg_color);
+            position += bmp->width + 1;
+        }
+        
+        // Ones place (always drawn)
+        bmp = &s_bmp_small_digits[temp_to_draw % 10];
+        draw_bitmap(bmp, position, draw_y, s_fg_color);
+        position += bmp->width + 2; // Extra gap before condition icon
+
+        // 3. Dynamic Weather Icon Selection
+        // Assuming conditions_tuple maps to standard OpenWeatherMap/Pebble weather IDs
+        const Bitmap* weather_icon = &s_weather_storm; // default fallback
+        
+        // Example condition parsing mapping (Adjust based on your JS code)
+        if (s_weather_condition_id == 0 ) {
+              weather_icon = &s_weather_sunny;
+          } else if (s_weather_condition_id == 3) {
+              weather_icon = &s_weather_cloudy;
+          } else if (s_weather_condition_id == 48) {
+              weather_icon = &s_weather_foggy;
+          } else if (s_weather_condition_id >= 55 && s_weather_condition_id < 68) {
+              weather_icon = &s_weather_rainy;
+          } else if (s_weather_condition_id == 75 || s_weather_condition_id == 77 || s_weather_condition_id == 86) {
+                weather_icon = &s_weather_snowy;
+          } else if (s_weather_condition_id == 82) {
+              weather_icon = &s_weather_rainy;
+          } else if (s_weather_condition_id == 95 || s_weather_condition_id == 99 ) {
+                weather_icon = &s_weather_storm;
+        } 
+        draw_bitmap(weather_icon, position, draw_y, s_fg_color);
+    }
+  
+  /*
+  
+    static char temperature_buffer[8];
+    static char conditions_buffer[32];
+  
+  
+    const Bitmap* bmp = NULL;
+    int position = 0;
+
+    bmp = &s_bmp_small_digits[10];  // - sign
+    draw_bitmap(bmp, 1+position, 2, s_fg_color);
+    position+=bmp->width+1;
+ 
+    bmp = &s_bmp_small_digits[2];
+    draw_bitmap(bmp, position, 2, s_fg_color);
+    position+=bmp->width;
+  
+    bmp = &s_bmp_small_digits[1];
+    draw_bitmap(bmp, position, 2, s_fg_color);
+    position+=bmp->width;
+  
+    bmp = &s_weather_storm;
+    draw_bitmap(bmp, position, 2, s_fg_color);
+    position+=bmp->width;
+  */
     
+ // end of weather test 
+  
     field_flush(layer, ctx);
 }
 
@@ -475,6 +565,7 @@ static void bt_handler(bool connected) {
 }
 
 static void tick_handler(struct tm* tick_time, TimeUnits units_changed) {
+  // should there be update_time(); //? Weather
     if (units_changed & DAY_UNIT) {
         s_month = tick_time->tm_mon;
         s_day = tick_time->tm_mday;
@@ -482,8 +573,16 @@ static void tick_handler(struct tm* tick_time, TimeUnits units_changed) {
         //s_weekday = (tick_time->tm_sec / 2) % 7;
         //s_month = ((tick_time->tm_sec + 1) / 2) % 12;
     }
-
-    if (units_changed & HOUR_UNIT) {
+  
+ // Weather update
+    if (tick_time->tm_min % 30 == 0) {
+      DictionaryIterator *iter;
+      app_message_outbox_begin(&iter);
+      dict_write_uint8(iter, MESSAGE_KEY_REQUEST_WEATHER, 1);
+      app_message_outbox_send();
+    }
+ // /Weather update
+   if (units_changed & HOUR_UNIT) {
         if (units_changed != (TimeUnits)(-1)) {
             notify(s_settings[NOTIFICATION_HOURLY]);
         }
@@ -540,7 +639,11 @@ static void tick_handler(struct tm* tick_time, TimeUnits units_changed) {
             digit_offsets[3] = 28;
             digit_offsets[4] = 15;
         }
-    
+ 
+ //       if ((hour > 9) && (hour <20)) X_TIME_OFFSET-=1;
+ //       else X_TIME_OFFSET=2;
+
+      
         bool changed = false;
         for (int i = 0; i < STATE_COUNT; ++i) {
             const int value = digit_values[i];
@@ -629,6 +732,24 @@ static void in_received_handler(DictionaryIterator* iter, void* context)
 {
     settings_read(iter);
     on_settings_changed();
+  
+    Tuple *temp_tuple = dict_find(iter, MESSAGE_KEY_TEMPERATURE);
+    Tuple *conditions_tuple = dict_find(iter, MESSAGE_KEY_CONDITIONS);
+  
+    if (temp_tuple && conditions_tuple) {
+ //   static char temperature_buffer[8];
+ //   static char conditions_buffer[32];
+ //   static char weather_layer_buffer[42];
+     
+    s_temperature = (int)temp_tuple->value->int32;
+    s_weather_condition_id = (int)conditions_tuple->value->int32;
+
+  //  snprintf(temperature_buffer, sizeof(temperature_buffer), "%d°C", (int)temp_tuple->value->int32);
+  //  snprintf(conditions_buffer, sizeof(conditions_buffer), "%s", conditions_tuple->value->cstring);
+  //  snprintf(weather_layer_buffer, sizeof(weather_layer_buffer), "%s %s", temperature_buffer, conditions_buffer);
+  //  text_layer_set_text(s_weather_layer, weather_layer_buffer);
+  }
+  
 }
 
 static void main_window_load(Window* window) {
@@ -660,8 +781,48 @@ static void main_window_unload(Window* window) {
     s_layer = NULL;
 }
   
+// Weather
+
+static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
+  
+  Tuple *temp_tuple = dict_find(iterator, MESSAGE_KEY_TEMPERATURE);
+  Tuple *conditions_tuple = dict_find(iterator, MESSAGE_KEY_CONDITIONS);
+
+  if (temp_tuple && conditions_tuple) {
+ //   static char temperature_buffer[8];
+ //   static char conditions_buffer[32];
+ //   static char weather_layer_buffer[42];
+ 
+    
+    s_temperature = (int)temp_tuple->value->int32;
+    s_weather_condition_id = (int)conditions_tuple->value->int32;
+
+  //  snprintf(temperature_buffer, sizeof(temperature_buffer), "%d°C", (int)temp_tuple->value->int32);
+  //  snprintf(conditions_buffer, sizeof(conditions_buffer), "%s", conditions_tuple->value->cstring);
+  //  snprintf(weather_layer_buffer, sizeof(weather_layer_buffer), "%s %s", temperature_buffer, conditions_buffer);
+  //  text_layer_set_text(s_weather_layer, weather_layer_buffer);
+  }
+  
+}
+
+static void inbox_dropped_callback(AppMessageResult reason, void *context) {
+  APP_LOG(APP_LOG_LEVEL_ERROR, "Message dropped!");
+}
+
+static void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
+  APP_LOG(APP_LOG_LEVEL_ERROR, "Outbox send failed!");
+}
+
+static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
+  APP_LOG(APP_LOG_LEVEL_INFO, "Outbox send success!");
+}
+
+// / Weather
+
 static void init() {
     srand(time(NULL));
+
+
 
     app_message_register_inbox_received(in_received_handler);
     const size_t buffer_size = 1 + MAX_KEY * (8 + sizeof(int));
@@ -669,7 +830,21 @@ static void init() {
     ASSERT2(rc == APP_MSG_OK, "app_message_open => %d", (int)rc);
     
     settings_load_persistent();
-    
+
+  
+ // Weather 
+  
+//    app_message_register_inbox_received(inbox_received_callback);
+    app_message_register_inbox_dropped(inbox_dropped_callback);
+    app_message_register_outbox_failed(outbox_failed_callback);
+    app_message_register_outbox_sent(outbox_sent_callback);
+
+    const int inbox_size = 128;
+    const int outbox_size = 128;
+    app_message_open(inbox_size, outbox_size);
+
+// / Weather 
+  
 #if USE_RAW_DIGITS == 1
     bitmap_check_all();
     for (int i = 0; i < DIGIT_COUNT; ++i) {
