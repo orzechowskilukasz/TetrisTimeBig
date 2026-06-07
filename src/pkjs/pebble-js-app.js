@@ -11,16 +11,36 @@ Pebble.addEventListener("ready",
     }
 );
 
+// Pebble.addEventListener("appmessage",
+//    function(e) {
+//        console.log("Got settings: " + JSON.stringify(e.payload));
+//        window.localStorage.options = JSON.stringify(e.payload);
+//    }
+// );
+
+
 Pebble.addEventListener("appmessage",
     function(e) {
-        console.log("Got settings: " + JSON.stringify(e.payload));
-        window.localStorage.options = JSON.stringify(e.payload);
+        console.log("Got message from watch: " + JSON.stringify(e.payload));
+
+        if (e.payload['MESSAGE_KEY_REQUEST_WEATHER'] !== undefined || e.payload['REQUEST_WEATHER'] !== undefined) {
+            
+            console.log("Received weather request, not my job, ignoring");
+            // fetchWeather(); 
+        } else {
+            if (e.payload['0'] !== undefined || e.payload['VERSION'] !== undefined) {
+                console.log("Looks like my settings. Saving to localStorage.");
+                window.localStorage.options = JSON.stringify(e.payload);
+            } else {
+                console.log("Uknown message type. Go away.");
+            }
+        }
     }
 );
 
 Pebble.addEventListener("showConfiguration",
     function(e) {
-        var url = 'http://vflashm.github.io/TetrisTime/configuration.html';
+      var url = 'http://thorn.piekielko.pl/tetristimebig/configuration.html';
         var options = window.localStorage.getItem("options");
         if (options !== null) {
             options = escape(options);

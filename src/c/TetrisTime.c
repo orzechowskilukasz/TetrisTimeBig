@@ -413,116 +413,108 @@ static void layer_draw(Layer* layer, GContext* ctx) {
         }
     }
 
- // weather test
-  
-  if (s_temperature != 999) { // Only draw if we have received real data
-        const Bitmap* bmp = NULL;
-        int position = 2; // Start X position from the left side
-        int draw_y = 2;   // Y position boundary line
-        
-        int temp_to_draw = s_temperature;
+ // Draw weather data
 
-        // 1. Handle Negative Sign
-        if (temp_to_draw < 0) {
-            bmp = &s_bmp_small_digits[10];  // Assuming index 10 is your minus symbol
-            draw_bitmap(bmp, position, draw_y, s_fg_color);
-            position += bmp->width + 1;
-            temp_to_draw = abs(temp_to_draw); // make positive for digit splitting
-        }
+  if (s_settings[WEATHER_ENABLED]) {
+  
+    if (s_temperature != 999) { // Only draw if we have received real data
+          const Bitmap* bmp = NULL;
+          int position = 1;   
 
-        // 2. Split and Draw Digits dynamically
-        if (temp_to_draw >= 100) {
-            // Hundreds place
-            bmp = &s_bmp_small_digits[temp_to_draw / 100];
-            draw_bitmap(bmp, position, draw_y, s_fg_color);
-            position += bmp->width + 1;
-        }
-        if (temp_to_draw >= 10) {
-            // Tens place
-            bmp = &s_bmp_small_digits[(temp_to_draw / 10) % 10];
-            draw_bitmap(bmp, position, draw_y, s_fg_color);
-            position += bmp->width + 1;
-        }
-        
-        // Ones place (always drawn)
-        bmp = &s_bmp_small_digits[temp_to_draw % 10];
-        draw_bitmap(bmp, position, draw_y, s_fg_color);
-        position += bmp->width + 2; // Extra gap before condition icon
-
-        // 3. Dynamic Weather Icon Selection
-        // Assuming conditions_tuple maps to standard OpenWeatherMap/Pebble weather IDs
-        const Bitmap* weather_icon = &s_weather_unknown; // default fallback
-        
-        if (s_weather_condition_id == 0 || s_weather_condition_id == 1) {
-              weather_icon = &s_weather_sunny;
-          } else if (s_weather_condition_id == 2 || s_weather_condition_id == 3) {
-              weather_icon = &s_weather_cloudy;
-          } else if (s_weather_condition_id == 45 || s_weather_condition_id == 48) {
-              weather_icon = &s_weather_foggy;
-          } else if (s_weather_condition_id >= 51 && s_weather_condition_id < 68) {
-              weather_icon = &s_weather_rainy;
-          } else if (s_weather_condition_id >= 71 && s_weather_condition_id < 78) {
-                weather_icon = &s_weather_snowy;
-          } else if (s_weather_condition_id >= 80 && s_weather_condition_id < 83) {
-              weather_icon = &s_weather_showers;  // rain showers actually, maybe there should be another icon
-          } else if (s_weather_condition_id >= 95 && s_weather_condition_id < 100 ) {
-                weather_icon = &s_weather_storm;
-        } 
-        draw_bitmap(weather_icon, position, draw_y, s_fg_color);
-
-        position += weather_icon->width + 1;
-  // Debug
-  /*
-        if (s_weather_condition_id >= 100) {
-            // Hundreds place
-            bmp = &s_bmp_small_digits[s_weather_condition_id / 100];
-            draw_bitmap(bmp, position, draw_y, s_fg_color);
-            position += bmp->width + 1;
-        }
-        if (s_weather_condition_id >= 10) {
-            // Tens place
-            bmp = &s_bmp_small_digits[(s_weather_condition_id / 10) % 10];
-            draw_bitmap(bmp, position, draw_y, s_fg_color);
-            position += bmp->width + 1;
-        }
-        
-        // Ones place (always drawn)
-        bmp = &s_bmp_small_digits[s_weather_condition_id % 10];
-        draw_bitmap(bmp, position, draw_y, s_fg_color);
-        position += bmp->width + 2; // Extra gap before condition icon
-  */
-   }  // if
-  
-  /*
-  
-    static char temperature_buffer[8];
-    static char conditions_buffer[32];
-  
-  
-    const Bitmap* bmp = NULL;
-    int position = 0;
-
-    bmp = &s_bmp_small_digits[10];  // - sign
-    draw_bitmap(bmp, 1+position, 2, s_fg_color);
-    position+=bmp->width+1;
- 
-    bmp = &s_bmp_small_digits[2];
-    draw_bitmap(bmp, position, 2, s_fg_color);
-    position+=bmp->width;
-  
-    bmp = &s_bmp_small_digits[1];
-    draw_bitmap(bmp, position, 2, s_fg_color);
-    position+=bmp->width;
-  
-    bmp = &s_weather_storm;
-    draw_bitmap(bmp, position, 2, s_fg_color);
-    position+=bmp->width;
-  */
     
- // end of weather test 
+          #if defined(PBL_PLATFORM_CHALK)  // Time Round 
+              position = 14;
+          #endif
+          #if defined(PBL_PLATFORM_GABBRO) // Round 2
+              position = 17;
+          #endif
+
+          int draw_y = 2;   // Y position boundary line
+        
+          int temp_to_draw = s_temperature;
+
+          // Negative Sign
+          if (temp_to_draw < 0) {
+              bmp = &s_bmp_small_digits[10]; 
+              draw_bitmap(bmp, position, draw_y, s_fg_color);
+              position += bmp->width + 1;
+              temp_to_draw = abs(temp_to_draw); // make positive for digit splitting
+          }
+
+          // Digits 
+      
+          if (temp_to_draw >= 100) {
+              // Hundreds
+              bmp = &s_bmp_small_digits[temp_to_draw / 100];
+              draw_bitmap(bmp, position, draw_y, s_fg_color);
+              position += bmp->width + 1;
+          }
+          if (temp_to_draw >= 10) {
+              // Tens 
+              bmp = &s_bmp_small_digits[(temp_to_draw / 10) % 10];
+              draw_bitmap(bmp, position, draw_y, s_fg_color);
+              position += bmp->width + 1;
+          }
+        
+          // Ones (always drawn)
+          bmp = &s_bmp_small_digits[temp_to_draw % 10];
+          draw_bitmap(bmp, position, draw_y, s_fg_color);
+          position += bmp->width + 1; 
+
+/*
+
+Code	Description
+
+0	Clear sky
+1, 2, 3	Mainly clear, partly cloudy, and overcast
+45, 48	Fog and depositing rime fog
+51, 53, 55	Drizzle: Light, moderate, and dense intensity
+56, 57	Freezing Drizzle: Light and dense intensity
+61, 63, 65	Rain: Slight, moderate and heavy intensity
+66, 67	Freezing Rain: Light and heavy intensity
+71, 73, 75	Snow fall: Slight, moderate, and heavy intensity
+77	Snow grains
+80, 81, 82	Rain showers: Slight, moderate, and violent
+85, 86	Snow showers slight and heavy
+95 *	Thunderstorm: Slight or moderate
+96, 99 *	Thunderstorm with slight and heavy hail
+
+*/
   
-    field_flush(layer, ctx);
-}
+    
+     // Weather icon selection
+       
+          const Bitmap* weather_icon = &s_weather_unknown; // default fallback
+        
+          if (s_weather_condition_id == 0)  {
+                weather_icon = &s_weather_sunny;
+            } else if (s_weather_condition_id == 1 || s_weather_condition_id == 2) {
+                weather_icon = &s_weather_sunandclouds;
+            } else if (s_weather_condition_id == 3) {
+                weather_icon = &s_weather_cloudy;
+            } else if (s_weather_condition_id == 45 || s_weather_condition_id == 48) {
+                weather_icon = &s_weather_foggy;
+            } else if (s_weather_condition_id >= 51 && s_weather_condition_id < 68) {
+                weather_icon = &s_weather_rainy;
+            } else if (s_weather_condition_id >= 71 && s_weather_condition_id < 78) {
+                  weather_icon = &s_weather_snowy;
+            } else if (s_weather_condition_id >= 80 && s_weather_condition_id < 83) {
+                weather_icon = &s_weather_showers;  
+            } else if (s_weather_condition_id >= 95 && s_weather_condition_id < 100 ) {
+                  weather_icon = &s_weather_storm;
+          } 
+          draw_bitmap(weather_icon, position, draw_y, s_fg_color);
+
+          position += weather_icon->width + 1;
+      
+      
+     } // draw if there is real data 
+
+  } // draw if enabled  
+  
+  field_flush(layer, ctx);
+
+} 
 
 static int is_animating() {
     if (s_date_frame) {
@@ -586,27 +578,29 @@ static void bt_handler(bool connected) {
 }
 
 static void tick_handler(struct tm* tick_time, TimeUnits units_changed) {
-  // should there be update_time(); //? Weather
+  
     if (units_changed & DAY_UNIT) {
         s_month = tick_time->tm_mon;
         s_day = tick_time->tm_mday;
         s_weekday = tick_time->tm_wday;
-        //s_weekday = (tick_time->tm_sec / 2) % 7;
-        //s_month = ((tick_time->tm_sec + 1) / 2) % 12;
     }
   
- // Weather update
-    if (tick_time->tm_min % 30 == 0) {
-      DictionaryIterator *iter;
-      app_message_outbox_begin(&iter);
-      dict_write_uint8(iter, MESSAGE_KEY_REQUEST_WEATHER, 1);
-      app_message_outbox_send();
+ // Weather update every 30 minutes when enabled 
+    if (s_settings[WEATHER_ENABLED]) {
+       if (tick_time->tm_min % 30 == 0 && tick_time->tm_sec % 30 == 0)  {
+           DictionaryIterator *iter;
+           APP_LOG(APP_LOG_LEVEL_INFO, "%d:%d:%d Asked for a weather update", tick_time->tm_hour, tick_time->tm_min, tick_time->tm_sec);
+           app_message_outbox_begin(&iter);
+           dict_write_uint8(iter, MESSAGE_KEY_REQUEST_WEATHER, 1);
+           app_message_outbox_send();
+       }
     }
- // /Weather update
-   if (units_changed & HOUR_UNIT) {
-        if (units_changed != (TimeUnits)(-1)) {
-            notify(s_settings[NOTIFICATION_HOURLY]);
-        }
+  
+  
+    if (units_changed & HOUR_UNIT) {
+         if (units_changed != (TimeUnits)(-1)) {
+             notify(s_settings[NOTIFICATION_HOURLY]);
+         }
     }
     
     if (units_changed & MINUTE_UNIT) {
@@ -821,7 +815,8 @@ static void init() {
 
 
     app_message_register_inbox_received(in_received_handler);
-    const size_t buffer_size = 1 + MAX_KEY * (8 + sizeof(int));
+    const size_t buffer_size = 129 + MAX_KEY * (8 + sizeof(int));
+  // const size_t buffer_size = 1 + MAX_KEY * (8 + sizeof(int));
     AppMessageResult rc = app_message_open(buffer_size, buffer_size);
     ASSERT2(rc == APP_MSG_OK, "app_message_open => %d", (int)rc);
     
@@ -834,11 +829,12 @@ static void init() {
     app_message_register_outbox_failed(outbox_failed_callback);
     app_message_register_outbox_sent(outbox_sent_callback);
 
+  /*
     const int inbox_size = 128;
     const int outbox_size = 128;
     app_message_open(inbox_size, outbox_size);
-
-// / Weather 
+*/
+// /Weather 
   
 #if USE_RAW_DIGITS == 1
     bitmap_check_all();

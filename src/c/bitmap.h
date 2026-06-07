@@ -696,11 +696,20 @@ static const Bitmap s_battery_charging = {
 
 static const Bitmap s_weather_sunny = {
     9, 5,
+    "  # # #  "
     "   ###   "
-    "  #####  "
-    "  #####  "
-    "  #####  "
     "   ###   "
+    "  # # #  "
+    " #     # "
+};
+
+static const Bitmap s_weather_sunandclouds = {
+    9, 5,
+    "   ###   "
+    " ######  "
+    " ####### "
+    "   ###   "
+    "    #    "
 };
 
 static const Bitmap s_weather_cloudy = {
@@ -714,20 +723,20 @@ static const Bitmap s_weather_cloudy = {
 
 static const Bitmap s_weather_rainy = {
     9, 5,
+    "   ###   "
+    " ######  "
     " ####### "
-    " ####### "
-    "  #   #  "
-    "   #   # "
-    "  #   #  "
+    "  # # #  "
+    " # # #   "
 };
 
 static const Bitmap s_weather_showers = {
     9, 5,
-    " ####### "
-    "  # # #  "
-    " #  #  #  "
-    "#   #  # "
-    "#  #   #  "
+    " ######## "
+    " # # # #  "
+    " # # # #  "
+    "# # # # # "
+    "# # # # # "
 };
 
 
