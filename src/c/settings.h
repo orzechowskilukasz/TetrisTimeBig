@@ -42,7 +42,9 @@ typedef enum {
     CUSTOM_ANIMATION_DATE_PERIOD_FRAMES,
     CUSTOM_ANIMATION_TETRIMINO_AGE_STEP_FRAMES,
     CUSTOM_ANIMATIONS_MAX,
+
     WEATHER_ENABLED,  // 29
+    WEATHER_DUMB_UNITS,
   
     MAX_KEY,
 //    MAX_KEY = CUSTOM_ANIMATIONS_MAX,
@@ -140,6 +142,7 @@ static bool settings_apply(const int* new_settings) {
     s_settings[CUSTOM_DATE] %= 2;
     s_settings[CUSTOM_ANIMATIONS] %= 2;
     s_settings[WEATHER_ENABLED] %= 2;
+    s_settings[WEATHER_DUMB_UNITS] %= 2;
 
     // disable duplicated text weekday
     if (s_settings[DATE_WEEKDAY_FORMAT] == DWF_TEXT) {

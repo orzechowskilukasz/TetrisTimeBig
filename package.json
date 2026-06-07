@@ -12,7 +12,7 @@
         "enableMultiJS": false,
         "messageKeys": {
             "ANIMATE_SECOND_DOT": 2,
-            "CONDITIONS": 30,
+            "CONDITIONS": 31,
             "CUSTOM_ANIMATIONS": 21,
             "CUSTOM_ANIMATIONS_MAX": 28,
             "CUSTOM_ANIMATION_DATE_PERIOD_FRAMES": 26,
@@ -38,10 +38,11 @@
             "NOTIFICATION_CONNECTED": 11,
             "NOTIFICATION_DISCONNECTED": 10,
             "NOTIFICATION_HOURLY": 13,
-            "REQUEST_WEATHER": 31,
+            "REQUEST_WEATHER": 32,
             "SKIP_INITIAL_ANIMATION": 12,
-            "TEMPERATURE": 0,
+            "TEMPERATURE": 33,
             "VERSION": 0,
+            "WEATHER_DUMB_UNITS": 30,
             "WEATHER_ENABLED": 29
         },
         "projectType": "native",

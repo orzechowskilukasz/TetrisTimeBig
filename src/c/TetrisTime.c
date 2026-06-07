@@ -431,8 +431,18 @@ static void layer_draw(Layer* layer, GContext* ctx) {
 
           int draw_y = 2;   // Y position boundary line
         
-          int temp_to_draw = s_temperature;
+          int temp_to_draw = 0;
 
+          if (s_settings[WEATHER_DUMB_UNITS]) {
+            
+              temp_to_draw = (int)((s_temperature * 9.0 / 5.0) + 32.0);  // converting C to F
+            
+          } else {
+            
+              temp_to_draw = s_temperature;
+          };
+            
+      
           // Negative Sign
           if (temp_to_draw < 0) {
               bmp = &s_bmp_small_digits[10]; 
