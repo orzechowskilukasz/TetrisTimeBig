@@ -395,32 +395,16 @@ static void layer_draw(Layer* layer, GContext* ctx) {
         draw_digit_state(&s_states[4]);
     }
     draw_date();
-    if (s_settings[ICON_CONNECTION]) {
-        if (!bluetooth_connection_service_peek()) {
-            draw_bitmap(&s_bluetooth, 0, 0, s_fg_color);
-        }
-    }
-    if (s_settings[ICON_BATTERY]) {
-        const Bitmap* bmp = NULL;
-        BatteryChargeState charge_state = battery_state_service_peek();
-        if (charge_state.is_charging) {
-            bmp = &s_battery_charging;
-        } else if (charge_state.charge_percent <= 20) {
-            bmp = &s_battery_empty;
-        }
-        if (bmp) {
-            draw_bitmap(bmp, FIELD_WIDTH - bmp->width, 0, s_fg_color);
-        }
-    }
+  
+    int position = 1; // x index of status line   
+    int draw_y =2;    // y index
 
- // Draw weather data
+  // Draw weather data
 
   if (s_settings[WEATHER_ENABLED]) {
   
     if (s_temperature != 999) { // Only draw if we have received real data
           const Bitmap* bmp = NULL;
-          int position = 1;   
-
     
           #if defined(PBL_PLATFORM_CHALK)  // Time Round 
               position = 14;
@@ -429,8 +413,6 @@ static void layer_draw(Layer* layer, GContext* ctx) {
               position = 17;
           #endif
 
-          int draw_y = 2;   // Y position boundary line
-        
           int temp_to_draw = 0;
 
           if (s_settings[WEATHER_DUMB_UNITS]) {
@@ -507,11 +489,11 @@ Code	Description
             } else if (s_weather_condition_id >= 51 && s_weather_condition_id < 68) {
                 weather_icon = &s_weather_rainy;
             } else if (s_weather_condition_id >= 71 && s_weather_condition_id < 78) {
-                  weather_icon = &s_weather_snowy;
+                weather_icon = &s_weather_snowy;
             } else if (s_weather_condition_id >= 80 && s_weather_condition_id < 83) {
                 weather_icon = &s_weather_showers;  
             } else if (s_weather_condition_id >= 95 && s_weather_condition_id < 100 ) {
-                  weather_icon = &s_weather_storm;
+                weather_icon = &s_weather_storm;
           } 
           draw_bitmap(weather_icon, position, draw_y, s_fg_color);
 
@@ -521,6 +503,30 @@ Code	Description
      } // draw if there is real data 
 
   } // draw if enabled  
+  
+    if (s_settings[ICON_CONNECTION]) {
+        if (!bluetooth_connection_service_peek()) {
+            const Bitmap* bt_icon = &s_bluetooth;
+            draw_bitmap(bt_icon, position, draw_y, s_fg_color);
+            position += bt_icon->width + 1;
+        }
+    }
+    if (s_settings[ICON_BATTERY]) {
+        const Bitmap* bmp = NULL;
+        BatteryChargeState charge_state = battery_state_service_peek();
+        if (charge_state.is_charging) {
+            bmp = &s_battery_charging;
+        } else if (charge_state.charge_percent <= 20) {
+            bmp = &s_battery_empty;
+        }
+        if (bmp) {
+            draw_bitmap(bmp, FIELD_WIDTH - bmp->width, draw_y, s_fg_color);
+        }
+    }
+
+  
+  
+  
   
   field_flush(layer, ctx);
 
