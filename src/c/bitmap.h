@@ -705,12 +705,25 @@ static const Bitmap s_weather_sunny = {
 
 static const Bitmap s_weather_sunandclouds = {
     9, 5,
+    "   ####  "
+    " ####### "
+    "###  ####"
+    "  #   #  "
+    "   ###   "
+};
+
+/*
+
+static const Bitmap s_weather_sunandclouds = {
+    9, 5,
     "   ###   "
     " ######  "
     " ####### "
     "   ###   "
     "    #    "
 };
+
+*/
 
 static const Bitmap s_weather_cloudy = {
     9, 5,
@@ -729,6 +742,98 @@ static const Bitmap s_weather_rainy = {
     "  # # #  "
     " # # #   "
 };
+static const Bitmap s_weather_drizzle_light = {
+    9, 5,
+    "   ###   "
+    " ######  "
+    " ####### "
+    "   #     "
+    " #   #   "
+};
+
+static const Bitmap s_weather_drizzle_moderate = {
+    9, 5,
+    "   ###   "
+    " ######  "
+    " ####### "
+    "    # # "
+    " #   #   "
+};
+
+static const Bitmap s_weather_drizzle_dense = {
+    9, 5,
+    "   ###   "
+    " ######  "
+    " ####### "
+    "  #   #  "
+    " #  # #   "
+};
+
+
+static const Bitmap s_weather_rain_light = {
+    9, 5,
+    "   ###   "
+    " ######  "
+    " ####### "
+    "  #      "
+    " #   #   "
+};
+
+static const Bitmap s_weather_rain_moderate = {
+    9, 5,
+    "   ###   "
+    " ######  "
+    " ####### "
+    "  #   #  "
+    " #   #   "
+};
+
+static const Bitmap s_weather_rain_dense = {
+    9, 5,
+    "   ###   "
+    " ######  "
+    " ####### "
+    "  # # #  "
+    " # # #   "
+};
+
+
+static const Bitmap s_weather_drizzle_light_freezing = {
+    14, 5,
+    "   ###        "
+    " ######       "
+    " ####### #  # "
+    "   #    # # # "
+    " #   #  #  #  "
+};
+
+static const Bitmap s_weather_drizzle_dense_freezing = {
+    14, 5,
+    "   ###        "
+    " ######       "
+    " ####### #  # "
+    "  # # # # # # "
+    " # # #  #  #  "
+};
+
+static const Bitmap s_weather_rain_light_freezing = {
+    14, 5,
+    "   ###        "
+    " ######       "
+    " ####### #  # "
+    "  #     # # # "
+    " #   #  #  #  "
+};
+
+static const Bitmap s_weather_rain_dense_freezing = {
+    14, 5,
+    "   ###        "
+    " ######       "
+    " ####### #  # "
+    "  # # # # # # "
+    " # # #  #  #  "
+};
+
 
 static const Bitmap s_weather_showers = {
     9, 5,

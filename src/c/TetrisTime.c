@@ -486,8 +486,26 @@ Code	Description
                 weather_icon = &s_weather_cloudy;
             } else if (s_weather_condition_id == 45 || s_weather_condition_id == 48) {
                 weather_icon = &s_weather_foggy;
-            } else if (s_weather_condition_id >= 51 && s_weather_condition_id < 68) {
-                weather_icon = &s_weather_rainy;
+            } else if (s_weather_condition_id == 51) {
+                weather_icon = &s_weather_drizzle_light;
+            } else if (s_weather_condition_id == 53) {
+                weather_icon = &s_weather_drizzle_moderate;
+            } else if (s_weather_condition_id == 55) {
+                weather_icon = &s_weather_drizzle_dense;
+            } else if (s_weather_condition_id == 56) {
+                weather_icon = &s_weather_drizzle_light_freezing;
+            } else if (s_weather_condition_id == 57) {
+                weather_icon = &s_weather_drizzle_dense_freezing;
+            } else if (s_weather_condition_id == 61) {
+                weather_icon = &s_weather_rain_light;
+            } else if (s_weather_condition_id == 63) {
+                weather_icon = &s_weather_rain_moderate;
+            } else if (s_weather_condition_id == 65) {
+                weather_icon = &s_weather_rain_dense;
+             } else if (s_weather_condition_id == 66) {
+                weather_icon = &s_weather_rain_light_freezing;
+            } else if (s_weather_condition_id == 67) {
+                weather_icon = &s_weather_rain_dense_freezing;      
             } else if (s_weather_condition_id >= 71 && s_weather_condition_id < 78) {
                 weather_icon = &s_weather_snowy;
             } else if (s_weather_condition_id >= 80 && s_weather_condition_id < 83) {
@@ -495,6 +513,10 @@ Code	Description
             } else if (s_weather_condition_id >= 95 && s_weather_condition_id < 100 ) {
                 weather_icon = &s_weather_storm;
           } 
+      
+          
+       //   weather_icon = &s_weather_sunandclouds; // debug
+      
           draw_bitmap(weather_icon, position, draw_y, s_fg_color);
 
           position += weather_icon->width + 1;
