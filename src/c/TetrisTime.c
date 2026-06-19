@@ -8,16 +8,16 @@
    #define X_TIME_OFFSET 3
 #endif
 #if defined(PBL_PLATFORM_FLINT)  // Below are defaults for legacy devices 
-   #define X_TIME_OFFSET -1
+   #define X_TIME_OFFSET 0
 #endif
 #if defined(PBL_PLATFORM_DIORITE)  // Below are defaults for legacy devices 
-   #define X_TIME_OFFSET -1
+   #define X_TIME_OFFSET 0
 #endif
 #if defined(PBL_PLATFORM_APLITE)  // Below are defaults for legacy devices 
-   #define X_TIME_OFFSET -1
+   #define X_TIME_OFFSET 0
 #endif
 #if defined(PBL_PLATFORM_BASALT)  // Below are defaults for legacy devices 
-   #define X_TIME_OFFSET -1
+   #define X_TIME_OFFSET 0
 #endif
 
 
@@ -436,19 +436,16 @@ static void layer_draw(Layer* layer, GContext* ctx) {
           // Digits 
       
           if (temp_to_draw >= 100) {
-              // Hundreds
               bmp = &s_bmp_small_digits[temp_to_draw / 100];
               draw_bitmap(bmp, position, draw_y, s_fg_color);
               position += bmp->width + 1;
           }
           if (temp_to_draw >= 10) {
-              // Tens 
               bmp = &s_bmp_small_digits[(temp_to_draw / 10) % 10];
               draw_bitmap(bmp, position, draw_y, s_fg_color);
               position += bmp->width + 1;
           }
         
-          // Ones (always drawn)
           bmp = &s_bmp_small_digits[temp_to_draw % 10];
           draw_bitmap(bmp, position, draw_y, s_fg_color);
           position += bmp->width + 1; 
@@ -480,12 +477,18 @@ Code	Description
         
           if (s_weather_condition_id == 0)  {
                 weather_icon = &s_weather_sunny;
-            } else if (s_weather_condition_id == 1 || s_weather_condition_id == 2) {
-                weather_icon = &s_weather_sunandclouds;
+            } else if (s_weather_condition_id == 1) {
+                weather_icon = &s_weather_mainly_clear;          
+            } else if (s_weather_condition_id == 2) {
+                weather_icon = &s_weather_partly_cloudy;
             } else if (s_weather_condition_id == 3) {
                 weather_icon = &s_weather_cloudy;
-            } else if (s_weather_condition_id == 45 || s_weather_condition_id == 48) {
+
+            } else if (s_weather_condition_id == 45) {
                 weather_icon = &s_weather_foggy;
+            } else if (s_weather_condition_id == 48) {
+                weather_icon = &s_weather_icy_fog;
+
             } else if (s_weather_condition_id == 51) {
                 weather_icon = &s_weather_drizzle_light;
             } else if (s_weather_condition_id == 53) {
@@ -496,8 +499,10 @@ Code	Description
                 weather_icon = &s_weather_drizzle_light_freezing;
             } else if (s_weather_condition_id == 57) {
                 weather_icon = &s_weather_drizzle_dense_freezing;
+
+          
             } else if (s_weather_condition_id == 61) {
-                weather_icon = &s_weather_rain_light;
+               weather_icon = &s_weather_rain_light;
             } else if (s_weather_condition_id == 63) {
                 weather_icon = &s_weather_rain_moderate;
             } else if (s_weather_condition_id == 65) {
@@ -505,9 +510,24 @@ Code	Description
              } else if (s_weather_condition_id == 66) {
                 weather_icon = &s_weather_rain_light_freezing;
             } else if (s_weather_condition_id == 67) {
-                weather_icon = &s_weather_rain_dense_freezing;      
-            } else if (s_weather_condition_id >= 71 && s_weather_condition_id < 78) {
+                weather_icon = &s_weather_rain_dense_freezing;
+            
+            } else if (s_weather_condition_id == 71) {
+                weather_icon = &s_weather_snow_slight;
+            } else if (s_weather_condition_id == 72) {
+                weather_icon = &s_weather_snow_moderate;
+             } else if (s_weather_condition_id == 75) {
+                weather_icon = &s_weather_snow_heavy;
+            } else if (s_weather_condition_id == 77) {
+                weather_icon = &s_weather_snowy;                  
+            
+            
+            
+            } else if (s_weather_condition_id >= 85 && s_weather_condition_id < 87) {
                 weather_icon = &s_weather_snowy;
+            
+            
+            
             } else if (s_weather_condition_id >= 80 && s_weather_condition_id < 83) {
                 weather_icon = &s_weather_showers;  
             } else if (s_weather_condition_id >= 95 && s_weather_condition_id < 100 ) {
