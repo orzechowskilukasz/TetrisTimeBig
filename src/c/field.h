@@ -51,10 +51,10 @@
 #if defined(PBL_PLATFORM_GABBRO)  // Time Round 2 
    #define FIELD_WIDTH 52
    #define FIELD_HEIGHT 52
-   #define FIELD_CELL_SIZE 3
-   #define FIELD_CELL_SPACING 2
-   #define FIELD_OFFSET_X -2
-   #define FIELD_OFFSET_Y 1
+   #define FIELD_CELL_SIZE 4
+   #define FIELD_CELL_SPACING 1
+   #define FIELD_OFFSET_X 0
+   #define FIELD_OFFSET_Y 0
 #endif
 #if defined(PBL_PLATFORM_CHALK)  // Time Round 
    #define FIELD_WIDTH 45

@@ -42,6 +42,7 @@
 // weather state
 static int s_temperature = 999; // 999 acts as an "no data yet" flag
 static int s_weather_condition_id = 0;
+static int s_isNight = 0;
 
 typedef struct {
     int8_t offset_x;
@@ -410,7 +411,7 @@ static void layer_draw(Layer* layer, GContext* ctx) {
               position = 14;
           #endif
           #if defined(PBL_PLATFORM_GABBRO) // Round 2
-              position = 17;
+              position = 19;
           #endif
 
           int temp_to_draw = 0;
@@ -474,16 +475,29 @@ Code	Description
      // Weather icon selection
        
           const Bitmap* weather_icon = &s_weather_unknown; // default fallback
-        
-          if (s_weather_condition_id == 0)  {
-                weather_icon = &s_weather_sunny;
-            } else if (s_weather_condition_id == 1) {
-                weather_icon = &s_weather_mainly_clear;          
-            } else if (s_weather_condition_id == 2) {
-                weather_icon = &s_weather_partly_cloudy;
-            } else if (s_weather_condition_id == 3) {
-                weather_icon = &s_weather_cloudy;
+     
+          if (s_isNight) {
 
+               if (s_weather_condition_id == 0)  {
+                   weather_icon = &s_weather_sunny_moon;
+                 } else if (s_weather_condition_id == 1) {
+                   weather_icon = &s_weather_mainly_clear_moon;          
+                 } else if (s_weather_condition_id == 2) {
+                   weather_icon = &s_weather_partly_cloudy_moon;        
+                 }
+            } else {
+              
+              if (s_weather_condition_id == 0)  {
+                   weather_icon = &s_weather_sunny;
+                 } else if (s_weather_condition_id == 1) {
+                   weather_icon = &s_weather_mainly_clear;          
+                 } else if (s_weather_condition_id == 2) {
+                   weather_icon = &s_weather_partly_cloudy;
+                 }
+            }
+            
+            if (s_weather_condition_id == 3) {
+                weather_icon = &s_weather_cloudy;
             } else if (s_weather_condition_id == 45) {
                 weather_icon = &s_weather_foggy;
             } else if (s_weather_condition_id == 48) {
@@ -516,11 +530,17 @@ Code	Description
                 weather_icon = &s_weather_snow_slight;
             } else if (s_weather_condition_id == 72) {
                 weather_icon = &s_weather_snow_moderate;
-             } else if (s_weather_condition_id == 75) {
+            } else if (s_weather_condition_id == 75) {
                 weather_icon = &s_weather_snow_heavy;
             } else if (s_weather_condition_id == 77) {
                 weather_icon = &s_weather_snowy;                  
             
+            } else if (s_weather_condition_id == 80) {
+                weather_icon = &s_weather_showers_slight;           
+            } else if (s_weather_condition_id == 81) {
+                weather_icon = &s_weather_showers_moderate;                       
+            } else if (s_weather_condition_id == 82) {
+                weather_icon = &s_weather_showers_violent;                       
             
             
             } else if (s_weather_condition_id >= 85 && s_weather_condition_id < 87) {
@@ -528,12 +548,14 @@ Code	Description
             
             
             
-            } else if (s_weather_condition_id >= 80 && s_weather_condition_id < 83) {
-                weather_icon = &s_weather_showers;  
-            } else if (s_weather_condition_id >= 95 && s_weather_condition_id < 100 ) {
-                weather_icon = &s_weather_storm;
-          } 
-      
+          
+             } else if (s_weather_condition_id == 95) {
+                weather_icon = &s_weather_storm;                  
+             } else if (s_weather_condition_id == 96) {
+                weather_icon = &s_weather_storm_hail;                              
+             } else if (s_weather_condition_id == 99) {
+                weather_icon = &s_weather_storm_heavy_hail;                  
+             }
           
        //   weather_icon = &s_weather_sunandclouds; // debug
       
@@ -544,7 +566,53 @@ Code	Description
       
      } // draw if there is real data 
 
-  } // draw if enabled  
+  } // draw weather if enabled  
+
+
+/*  
+  
+//    if (s_settings[ICON_STEPS]) {
+
+       #if defined(PBL_HEALTH)
+      
+           HealthMetric metric = HealthMetricStepCount;
+ 
+           time_t start = time_start_of_today();
+           time_t end = time(NULL);
+
+           HealthServiceAccessibilityMask mask = health_service_metric_accessible(metric, start, end);
+  
+           if (mask & HealthServiceAccessibilityMaskAvailable) {
+
+                const Bitmap* bmp = NULL;
+                HealthValue steps = health_service_sum(metric, start, end);
+    
+                const Bitmap* steps_icon = &s_boots;
+                draw_bitmap(steps_icon, position, draw_y, s_fg_color);
+                position += steps_icon->width + 1;
+
+    
+                char buffer[12];
+                snprintf(buffer, sizeof(buffer), "%d", (int)steps);
+
+                for (int i = 0; buffer[i] != '\0'; i++) {
+                   int digit = buffer[i] - '0'; // Convert char to int
+                   const Bitmap* bmp = &s_bmp_small_digits[digit];
+                   draw_bitmap(bmp, position, draw_y, s_fg_color);
+                   position += bmp->width + 1;
+                }             
+             
+
+           } else {
+                APP_LOG(APP_LOG_LEVEL_INFO, "Steps not available");
+           }
+      
+      
+       #endif         
+      
+//        }
+    
+*/  
   
     if (s_settings[ICON_CONNECTION]) {
         if (!bluetooth_connection_service_peek()) {
@@ -812,13 +880,18 @@ static void in_received_handler(DictionaryIterator* iter, void* context)
   
     Tuple *temp_tuple = dict_find(iter, MESSAGE_KEY_TEMPERATURE);
     Tuple *conditions_tuple = dict_find(iter, MESSAGE_KEY_CONDITIONS);
+    Tuple *isNight_tuple = dict_find(iter, MESSAGE_KEY_ISNIGHT);
  
     
     if (temp_tuple && conditions_tuple) { 
         s_temperature = (int)temp_tuple->value->int32;
         s_weather_condition_id = (int)conditions_tuple->value->int32;
     }
-  
+
+    if (isNight_tuple) { 
+        s_isNight = (int)isNight_tuple->value->int32;
+    }
+
 }
 
 static void main_window_load(Window* window) {

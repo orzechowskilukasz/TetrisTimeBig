@@ -693,16 +693,6 @@ static const Bitmap s_battery_charging = {
     "####  "
 };
 
-/*
-static const Bitmap s_weather_sunny = {
-    9, 5,
-    "  # # #  "
-    "   ###   "
-    "   ###   "
-    "  # # #  "
-    " #     # "
-};
-*/
 
 static const Bitmap s_weather_sunny = {
     9, 5,
@@ -713,6 +703,14 @@ static const Bitmap s_weather_sunny = {
     " # #### #"
 };
 
+static const Bitmap s_weather_sunny_moon = {
+    7, 5,
+    "    ## "
+    "  ##   "
+    " ##    "
+    " ##    "
+    "  ###  "
+};
 
 
 static const Bitmap s_weather_mainly_clear = {
@@ -724,13 +722,33 @@ static const Bitmap s_weather_mainly_clear = {
     "  ###    "
 };
 
+static const Bitmap s_weather_mainly_clear_moon = {
+    9, 5,
+    "   # #   "
+    " #  ###  "
+    " #  #### "
+    " #   #   "
+    "   # #   "
+};
+
+
 static const Bitmap s_weather_partly_cloudy = {
     9, 5,
-    "   ###    "
-    " ######  "
+    "  ##     "
+    " #  ##   "
+    " # ##### "
+    " ########"
     " ####### "
-    " #   #   "
-    "  ###    "
+};
+
+
+static const Bitmap s_weather_partly_cloudy_moon = {
+    11, 5,
+    "  #        "
+    " #     ##  "
+    " #   ##### "
+    "  # #######"
+    "    ###### "
 };
 
 
@@ -844,16 +862,32 @@ static const Bitmap s_weather_rain_dense_freezing = {
 };
 
 
-static const Bitmap s_weather_showers = {
+static const Bitmap s_weather_showers_slight = {
     9, 5,
     "   ###   "
     " ######  "
     " ####### "
-    " ##  ##  "
-    "##  ##   "
+    "    #    "
+    "   ##    "
 };
 
+static const Bitmap s_weather_showers_moderate = {
+    9, 5,
+    "   ###   "
+    " ######  "
+    " ####### "
+    "  #   #  "
+    " ##  ##  "
+};
 
+static const Bitmap s_weather_showers_violent = {
+    9, 5,
+    "   ###   "
+    " ######  "
+    " ####### "
+    " #  # #  "
+    "## # ##  "
+};
 
 static const Bitmap s_weather_snowy = {
     9, 5,
@@ -895,13 +929,38 @@ static const Bitmap s_weather_snow_heavy = {
 
 
 static const Bitmap s_weather_storm = {
-    9, 5,
+    9, 7,
+    "   ###   "
+    " ######  "
     " ####### "
-    "    ##   "
-    "   ##    "
+    "   #     "
     "  ####   "
     "    #    "
+    "   #     "  
 };
+
+static const Bitmap s_weather_storm_hail = {
+    10, 7,
+    "   ###    "
+    " ######   " 
+    " #######  " 
+    "   #      "
+    "  #### ## "
+    "    #  ## "
+    "   #      "  
+};
+
+static const Bitmap s_weather_storm_heavy_hail = {
+    12, 7,
+    "   #######  "
+    " ########## " 
+    " ########   " 
+    "  #      ## "
+    " ####    ## "
+    "   #  ##    "
+    "  #   ##    "  
+};
+
 
 static const Bitmap s_weather_foggy = {
     9, 5,
@@ -915,7 +974,7 @@ static const Bitmap s_weather_foggy = {
 
 
 static const Bitmap s_weather_icy_fog = {
-    9, 5,
+    17, 5,
     " #######  # # #  "
     "           ###   "
     " ####### ####### "
@@ -931,6 +990,17 @@ static const Bitmap s_weather_unknown = {
     "  # #   "
     " #   #  "
 };
+
+static const Bitmap s_boots = {
+    8, 5,
+    " ###    "
+    " ###    "
+    " ###### "
+    " #######"
+    " ## ### "
+};
+
+
 
 static void draw_bitmap(const Bitmap* bmp, int x, int y, GColor color) {
     int yoffset = 0;

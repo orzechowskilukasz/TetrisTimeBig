@@ -7,22 +7,62 @@ var xhrRequest = function (url, type, callback) {
   xhr.send();
 };
 
-function weatherCodeToCondition(code) {
-  
-/*  if (code === 0) return 'Clear';
-  if (code <= 3) return 'Cloudy';
-  if (code <= 48) return 'Fog';
-  if (code <= 55) return 'Drizzle';
-  if (code <= 57) return 'Fz. Drizzle';
-  if (code <= 65) return 'Rain';
-  if (code <= 67) return 'Fz. Rain';
-  if (code <= 75) return 'Snow';
-  if (code <= 77) return 'Snow Grains';
-  if (code <= 82) return 'Showers';
-  if (code <= 86) return 'Snow Shwrs';
-  if (code === 95) return 'T-Storm';
-  if (code <= 99) return 'T-Storm';*/
-  return code; // let's keep it simple and process the codes on the watch
+
+function isIsNightYet(latitude, longitude) {
+  const lat = parseFloat(latitude);
+  const lon = parseFloat(longitude);
+  const date = new Date();
+
+  if (isNaN(lat) || isNaN(lon)) {
+    throw new Error("Latitude and longitude must be valid numbers.");
+  }
+
+  // 1. Get Day of the Year (N) from 1 to 365
+  const startOfYear = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+  const diffInMs = date.getTime() - startOfYear.getTime();
+  const N = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
+
+  // 2. Fractional Year (gamma) in radians
+  const hour = date.getUTCHours() + date.getUTCMinutes() / 60 + date.getUTCSeconds() / 3600;
+  const gamma = (2 * Math.PI / 365) * (N - 1 + (hour - 12) / 24);
+
+  // 3. Equation of Time (eqTime) in minutes (corrects for Earth's elliptical orbit)
+  const eqTime = 229.18 * (
+    0.000075 +
+    0.001868 * Math.cos(gamma) -
+    0.032077 * Math.sin(gamma) -
+    0.014615 * Math.cos(2 * gamma) -
+    0.040849 * Math.sin(2 * gamma)
+  );
+
+  // 4. Solar Declination (decl) in radians (the tilt of the Earth relative to the sun)
+  const decl = 0.006918 -
+    0.399912 * Math.cos(gamma) +
+    0.070257 * Math.sin(gamma) -
+    0.006758 * Math.cos(2 * gamma) +
+    0.000907 * Math.sin(2 * gamma) -
+    0.002697 * Math.cos(3 * gamma) +
+    0.00148 * Math.sin(3 * gamma);
+
+  // 5. True Solar Time (tst) in minutes
+  const timeOffset = eqTime + 4 * lon;
+  const tst = (date.getUTCHours() * 60) + date.getUTCMinutes() + (date.getUTCSeconds() / 60) + timeOffset;
+
+  // 6. Hour Angle (ha) in degrees, normalized between -180 and 180
+  let ha = (tst / 4) - 180;
+  if (ha < -180) ha += 360;
+  if (ha > 180) ha -= 360;
+  const haRad = ha * Math.PI / 180;
+
+  // 7. Solar Elevation Angle Calculation
+  const latRad = lat * Math.PI / 180;
+  const sinEl = Math.sin(latRad) * Math.sin(decl) + Math.cos(latRad) * Math.cos(decl) * Math.cos(haRad);
+  const elRad = Math.asin(sinEl);
+  const elDeg = elRad * 180 / Math.PI;
+
+  // Sunrise/sunset officially occurs when the center of the sun is at -0.833 degrees
+  // due to atmospheric refraction and the physical size of the solar disc.
+  return elDeg < -0.833 ? 1 : 0;
 }
 
 function locationSuccess(pos) {
@@ -36,15 +76,17 @@ function locationSuccess(pos) {
       var json = JSON.parse(responseText);
 
       var temperature = Math.round(json.current.temperature_2m);
-      var conditions = weatherCodeToCondition(json.current.weather_code);
-
+      var conditions = json.current.weather_code;
+      var isNight = isIsNightYet(pos.coords.latitude, pos.coords.longitude);
+      
       var dictionary = {
         'TEMPERATURE': temperature,
-        'CONDITIONS': conditions
+        'CONDITIONS': conditions,
+        'ISNIGHT': isNight
       };
 
       Pebble.sendAppMessage(dictionary,
-        function(e) { console.log('Weather info sent!'); },
+        function(e) { console.log('Weather info sent! url: ', url); },
         function(e) { console.log('Error sending weather info!'); }
       );
     }

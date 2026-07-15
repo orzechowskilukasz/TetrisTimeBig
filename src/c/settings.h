@@ -95,12 +95,14 @@ static Settings s_settings;
 
 inline static int settings_get_default(SettingsKey key) {
     switch (key) {
-    case ANIMATE_SECOND_DOT:
+    case LIGHT_THEME:
         return 1;
     case DATE_WEEKDAY_FORMAT:
         return DWF_TEXT;
     case NOTIFICATION_DISCONNECTED:
         return NTF_DOUBLE_PULSE;
+    case WEATHER_ENABLED:
+        return 1;
     default:
         return 0;
     }
