@@ -197,9 +197,17 @@ static const Bitmap s_bmp_small_digits[] = {
         "## "
         "   "
         "   "
+    },    {  
+        BMP_SMALL_DIGIT_WIDTH, BMP_SMALL_HEIGHT,
+        "   "
+        "  #"
+        " # "
+        "#  "
+        "   "
     },      
+      
 };
-STATIC_ASSERT(ARRAY_SIZE(s_bmp_small_digits) == 11);
+STATIC_ASSERT(ARRAY_SIZE(s_bmp_small_digits) == 12);
 
 static const Bitmap s_small_marked_weekdays[] = {
     { 5, 5,
@@ -695,21 +703,23 @@ static const Bitmap s_battery_charging = {
 
 
 static const Bitmap s_weather_sunny = {
-    9, 5,
-    " # #### #"
-    "  ##  ## "
-    " ##    ##"
-    "  ##  ## "
-    " # #### #"
+    10, 5,
+    "  #    #  "
+    "    ##    "
+    " # #  # # "
+    "    ##    "
+    "  #    #  "
 };
 
+
+
 static const Bitmap s_weather_sunny_moon = {
-    7, 5,
-    "    ## "
-    "  ##   "
-    " ##    "
-    " ##    "
-    "  ###  "
+    6, 5,
+    "   ## "
+    " ##   "
+    "##    "
+    " ##   "
+    "  ### "
 };
 
 
@@ -724,11 +734,11 @@ static const Bitmap s_weather_mainly_clear = {
 
 static const Bitmap s_weather_mainly_clear_moon = {
     9, 5,
-    "   # #   "
-    " #  ###  "
-    " #  #### "
-    " #   #   "
-    "   # #   "
+    "  #      "
+    " #   ### "
+    " #  #####"
+    " #   ####"
+    "  #      "
 };
 
 

@@ -12,7 +12,7 @@
         "enableMultiJS": false,
         "messageKeys": {
             "ANIMATE_SECOND_DOT": 2,
-            "CONDITIONS": 31,
+            "CONDITIONS": 32,
             "CUSTOM_ANIMATIONS": 21,
             "CUSTOM_ANIMATIONS_MAX": 28,
             "CUSTOM_ANIMATION_DATE_PERIOD_FRAMES": 26,
@@ -33,16 +33,21 @@
             "DATE_WEEKDAY_FORMAT": 6,
             "ICON_BATTERY": 9,
             "ICON_CONNECTION": 8,
-            "ISNIGHT": 34,
+            "ISNIGHT": 35,
             "LARGE_DATE_FONT": 14,
             "LIGHT_THEME": 1,
             "NOTIFICATION_CONNECTED": 11,
             "NOTIFICATION_DISCONNECTED": 10,
             "NOTIFICATION_HOURLY": 13,
-            "REQUEST_WEATHER": 32,
+            "REQUEST_WEATHER": 33,
             "SKIP_INITIAL_ANIMATION": 12,
-            "TEMPERATURE": 33,
+            "SUNRISE": 38,
+            "SUNSET": 39,
+            "TEMPERATURE": 34,
+            "TEMP_MAX": 36,
+            "TEMP_MIN": 37,
             "VERSION": 0,
+            "WEATHER_DAY": 31,
             "WEATHER_DUMB_UNITS": 30,
             "WEATHER_ENABLED": 29
         },
@@ -72,5 +77,5 @@
             "watchface": true
         }
     },
-    "version": "3.7.6"
+    "version": "3.7.7"
 }

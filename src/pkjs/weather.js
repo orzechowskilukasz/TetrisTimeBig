@@ -69,7 +69,9 @@ function locationSuccess(pos) {
   var url = 'https://api.open-meteo.com/v1/forecast?' +
       'latitude=' + pos.coords.latitude +
       '&longitude=' + pos.coords.longitude +
-      '&current=temperature_2m,weather_code';
+      '&current=temperature_2m,weather_code' +
+      '&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset' +
+      '&timezone=auto';
 
   xhrRequest(url, 'GET',
     function(responseText) {
@@ -78,11 +80,21 @@ function locationSuccess(pos) {
       var temperature = Math.round(json.current.temperature_2m);
       var conditions = json.current.weather_code;
       var isNight = isIsNightYet(pos.coords.latitude, pos.coords.longitude);
+      var maxTemperature = Math.round(json.daily.temperature_2m_max[0]);
+      var minTemperature = Math.round(json.daily.temperature_2m_min[0]);
+      
+      // Convert ISO 8601 strings (e.g., "2026-07-19T05:34") to Unix Timestamps (Seconds)
+      var sunrise = Math.floor(Date.parse(json.daily.sunrise[0]) / 1000);
+      var sunset = Math.floor(Date.parse(json.daily.sunset[0]) / 1000);
       
       var dictionary = {
         'TEMPERATURE': temperature,
         'CONDITIONS': conditions,
-        'ISNIGHT': isNight
+        'ISNIGHT': isNight,
+        'TEMP_MAX': maxTemperature,
+        'TEMP_MIN': minTemperature,
+        'SUNRISE': sunrise,
+        'SUNSET': sunset
       };
 
       Pebble.sendAppMessage(dictionary,

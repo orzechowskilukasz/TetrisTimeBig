@@ -43,6 +43,11 @@
 static int s_temperature = 999; // 999 acts as an "no data yet" flag
 static int s_weather_condition_id = 0;
 static int s_isNight = 0;
+static int s_sunrise = 0;
+static int s_sunset = 0;
+static int s_temperature_max = 0;
+static int s_temperature_min = 0;
+static int dayTemperature = 999;
 
 typedef struct {
     int8_t offset_x;
@@ -415,10 +420,19 @@ static void layer_draw(Layer* layer, GContext* ctx) {
           #endif
 
           int temp_to_draw = 0;
+      
+       
+          if ( abs(s_temperature_min) > abs(s_temperature_max) ) {
+            dayTemperature=s_temperature_min;
+          } else {
+            dayTemperature=s_temperature_max;            
+          }
+      
 
           if (s_settings[WEATHER_DUMB_UNITS]) {
             
               temp_to_draw = (int)((s_temperature * 9.0 / 5.0) + 32.0);  // converting C to F
+              dayTemperature = (int)((dayTemperature * 9.0 / 5.0) + 32.0);  // converting C to F     
             
           } else {
             
@@ -451,6 +465,39 @@ static void layer_draw(Layer* layer, GContext* ctx) {
           draw_bitmap(bmp, position, draw_y, s_fg_color);
           position += bmp->width + 1; 
 
+      
+    // day forecast
+ 
+        if (s_settings[WEATHER_DAY]) {
+          // Slash
+              bmp = &s_bmp_small_digits[11]; 
+              draw_bitmap(bmp, position, draw_y, s_fg_color);
+              position += bmp->width + 1;
+      
+          // Negative Sign
+          if (dayTemperature < 0) {
+              bmp = &s_bmp_small_digits[10]; 
+              draw_bitmap(bmp, position, draw_y, s_fg_color);
+              position += bmp->width + 1;
+              dayTemperature = abs(dayTemperature); // make positive for digit splitting
+          }
+      
+          if (dayTemperature >= 100) {
+              bmp = &s_bmp_small_digits[dayTemperature / 100];
+              draw_bitmap(bmp, position, draw_y, s_fg_color);
+              position += bmp->width + 1;
+          }
+          if (dayTemperature >= 10) {
+              bmp = &s_bmp_small_digits[(dayTemperature / 10) % 10];
+              draw_bitmap(bmp, position, draw_y, s_fg_color);
+              position += bmp->width + 1;
+          }
+        
+          bmp = &s_bmp_small_digits[dayTemperature % 10];
+          draw_bitmap(bmp, position, draw_y, s_fg_color);
+          position += bmp->width + 1; 
+        }
+      
 /*
 
 Code	Description
@@ -563,6 +610,7 @@ Code	Description
 
           position += weather_icon->width + 1;
       
+
       
      } // draw if there is real data 
 
@@ -881,6 +929,11 @@ static void in_received_handler(DictionaryIterator* iter, void* context)
     Tuple *temp_tuple = dict_find(iter, MESSAGE_KEY_TEMPERATURE);
     Tuple *conditions_tuple = dict_find(iter, MESSAGE_KEY_CONDITIONS);
     Tuple *isNight_tuple = dict_find(iter, MESSAGE_KEY_ISNIGHT);
+    Tuple *temp_max_tuple = dict_find(iter, MESSAGE_KEY_TEMP_MAX);
+    Tuple *temp_min_tuple = dict_find(iter, MESSAGE_KEY_TEMP_MIN);
+    Tuple *sunrise_tuple = dict_find(iter, MESSAGE_KEY_SUNRISE);
+    Tuple *sunset_tuple = dict_find(iter, MESSAGE_KEY_SUNSET);
+  
  
     
     if (temp_tuple && conditions_tuple) { 
@@ -892,6 +945,17 @@ static void in_received_handler(DictionaryIterator* iter, void* context)
         s_isNight = (int)isNight_tuple->value->int32;
     }
 
+    if (temp_max_tuple && temp_min_tuple) { 
+        s_temperature_max = (int)temp_max_tuple->value->int32;
+        s_temperature_min = (int)temp_min_tuple->value->int32;
+    }
+
+   if (sunrise_tuple && sunset_tuple) { 
+        s_sunrise = (int)sunrise_tuple->value->int32;
+        s_sunset = (int)sunset_tuple->value->int32;
+    }
+
+  
 }
 
 static void main_window_load(Window* window) {
