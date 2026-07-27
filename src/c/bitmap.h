@@ -190,24 +190,50 @@ static const Bitmap s_bmp_small_digits[] = {
         "###"
         "  #"
         "###"
-    },    {
+    },    
+    {
         BMP_SMALL_DIGIT_WIDTH, BMP_SMALL_HEIGHT,
         "   "
         "   "
         "## "
         "   "
         "   "
-    },    {  
+    },    
+    {  
         BMP_SMALL_DIGIT_WIDTH, BMP_SMALL_HEIGHT,
         "   "
         "  #"
         " # "
         "#  "
         "   "
-    },      
-      
+    },    
+    {  
+        BMP_SMALL_DIGIT_WIDTH, BMP_SMALL_HEIGHT,
+        "   "
+        "  #"
+        " ## "
+        "#  "
+        "   "
+    },     
+    {
+      BMP_SMALL_DIGIT_WIDTH, BMP_SMALL_HEIGHT,
+        "   "
+        "#  "
+        " ##"
+        "  #"
+        "   "
+    },     
+    {
+      BMP_SMALL_DIGIT_WIDTH, BMP_SMALL_HEIGHT,
+        "   "
+        "   "
+        "###"
+        "   "
+        "   "
+    },     
+        
 };
-STATIC_ASSERT(ARRAY_SIZE(s_bmp_small_digits) == 12);
+STATIC_ASSERT(ARRAY_SIZE(s_bmp_small_digits) == 15);
 
 static const Bitmap s_small_marked_weekdays[] = {
     { 5, 5,

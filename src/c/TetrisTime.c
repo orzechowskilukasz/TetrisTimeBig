@@ -48,6 +48,7 @@ static int s_sunset = 0;
 static int s_temperature_max = 0;
 static int s_temperature_min = 0;
 static int dayTemperature = 999;
+static int prevTemperature = 999;
 
 typedef struct {
     int8_t offset_x;
@@ -470,7 +471,16 @@ static void layer_draw(Layer* layer, GContext* ctx) {
  
         if (s_settings[WEATHER_DAY]) {
           // Slash
-              bmp = &s_bmp_small_digits[11]; 
+          
+            if (prevTemperature==999) {
+              bmp = &s_bmp_small_digits[11];               
+            } else if (prevTemperature < temp_to_draw) {
+              bmp = &s_bmp_small_digits[12];               
+            } else if (prevTemperature > temp_to_draw) {
+              bmp = &s_bmp_small_digits[13];
+            } else if (prevTemperature == temp_to_draw) {
+              bmp = &s_bmp_small_digits[14];
+            }       
               draw_bitmap(bmp, position, draw_y, s_fg_color);
               position += bmp->width + 1;
       
@@ -678,7 +688,16 @@ Code	Description
             bmp = &s_battery_empty;
         }
         if (bmp) {
-            draw_bitmap(bmp, FIELD_WIDTH - bmp->width, draw_y, s_fg_color);
+          
+            if (position> FIELD_WIDTH - bmp->width) { 
+
+              draw_y = 8; 
+              draw_bitmap(bmp, FIELD_WIDTH - bmp->width, draw_y, s_fg_color);
+              draw_y = 2;
+              
+            } else { 
+              draw_bitmap(bmp, FIELD_WIDTH - bmp->width, draw_y, s_fg_color);
+            }
         }
     }
 
@@ -751,7 +770,14 @@ static void bt_handler(bool connected) {
     }
 }
 
+
+bool isItDay(int sunrise, int sunset) {
+    time_t now = time(NULL);
+    return (now >= sunrise && now < sunset);
+}
+
 static void tick_handler(struct tm* tick_time, TimeUnits units_changed) {
+
   
     if (units_changed & DAY_UNIT) {
         s_month = tick_time->tm_mon;
@@ -762,6 +788,7 @@ static void tick_handler(struct tm* tick_time, TimeUnits units_changed) {
  // Weather update every 30 minutes when enabled 
     if (s_settings[WEATHER_ENABLED]) {
        if (tick_time->tm_min % 30 == 0 && tick_time->tm_sec % 30 == 0)  {
+           prevTemperature = s_temperature;
            DictionaryIterator *iter;
            APP_LOG(APP_LOG_LEVEL_INFO, "%d:%d:%d Asked for a weather update", tick_time->tm_hour, tick_time->tm_min, tick_time->tm_sec);
            app_message_outbox_begin(&iter);
@@ -783,7 +810,17 @@ static void tick_handler(struct tm* tick_time, TimeUnits units_changed) {
         int digit_values[STATE_COUNT];
         int digit_offsets[STATE_COUNT];
         int hour = tick_time->tm_hour;
-    
+        
+        if (s_sunrise>0 && s_sunset>0) {
+      
+          if (isItDay(s_sunrise, s_sunset)) {
+            s_isNight=0;
+          } else {
+            s_isNight=1;
+          }
+          
+        } // check that we have don't have defaults 
+      
         if (!clock24) {
             hour = hour % 12;
             if (hour == 0) {
