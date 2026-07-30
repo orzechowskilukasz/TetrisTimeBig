@@ -417,7 +417,15 @@ static void layer_draw(Layer* layer, GContext* ctx) {
               position = 14;
           #endif
           #if defined(PBL_PLATFORM_GABBRO) // Round 2
-              position = 19;
+      
+              if (s_settings[WEATHER_DAY]) {
+                 position = 13;
+                 draw_y = 10;
+              }
+              else {
+                 position=18;
+              }
+            
           #endif
 
           int temp_to_draw = 0;
@@ -481,9 +489,15 @@ static void layer_draw(Layer* layer, GContext* ctx) {
             } else if (prevTemperature == temp_to_draw) {
               bmp = &s_bmp_small_digits[14];
             }       
+
+            #if defined(PBL_PLATFORM_GABBRO)  // Time Round 2 
               draw_bitmap(bmp, position, draw_y, s_fg_color);
               position += bmp->width + 1;
-      
+            #else
+              draw_bitmap(bmp, position, draw_y, s_fg_color);
+              position += bmp->width + 1;
+            #endif
+          
           // Negative Sign
           if (dayTemperature < 0) {
               bmp = &s_bmp_small_digits[10]; 
@@ -614,7 +628,7 @@ Code	Description
                 weather_icon = &s_weather_storm_heavy_hail;                  
              }
           
-       //   weather_icon = &s_weather_sunandclouds; // debug
+ //         weather_icon = &s_weather_sunny; // debug
       
           draw_bitmap(weather_icon, position, draw_y, s_fg_color);
 
@@ -790,7 +804,7 @@ static void tick_handler(struct tm* tick_time, TimeUnits units_changed) {
        if (tick_time->tm_min % 30 == 0 && tick_time->tm_sec % 30 == 0)  {
            prevTemperature = s_temperature;
            DictionaryIterator *iter;
-           APP_LOG(APP_LOG_LEVEL_INFO, "%d:%d:%d Asked for a weather update", tick_time->tm_hour, tick_time->tm_min, tick_time->tm_sec);
+// debug           APP_LOG(APP_LOG_LEVEL_INFO, "%d:%d:%d Asked for a weather update", tick_time->tm_hour, tick_time->tm_min, tick_time->tm_sec);
            app_message_outbox_begin(&iter);
            dict_write_uint8(iter, MESSAGE_KEY_REQUEST_WEATHER, 1);
            app_message_outbox_send();

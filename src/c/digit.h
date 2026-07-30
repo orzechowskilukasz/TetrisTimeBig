@@ -1,7 +1,14 @@
+
+
+
 #if defined(PBL_PLATFORM_EMERY)  // Time 2  - this approprietly aligns vertically the bottom part with date 
     #define DIGIT_HEIGHT 13 // 13
-#else 
-    #define DIGIT_HEIGHT 10 
+#else
+   #if defined(PBL_PLATFORM_GABBRO)
+       #define DIGIT_HEIGHT 11 // 13
+   #else
+       #define DIGIT_HEIGHT 10
+   #endif
 #endif
 
 #include "pebble.h"

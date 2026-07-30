@@ -210,17 +210,17 @@ static const Bitmap s_bmp_small_digits[] = {
     {  
         BMP_SMALL_DIGIT_WIDTH, BMP_SMALL_HEIGHT,
         "   "
-        "  #"
-        " ## "
-        "#  "
+        " # "
+        "###"
+        "   "
         "   "
     },     
     {
       BMP_SMALL_DIGIT_WIDTH, BMP_SMALL_HEIGHT,
         "   "
-        "#  "
-        " ##"
-        "  #"
+        "   "
+        "###"
+        " # "
         "   "
     },     
     {
@@ -729,23 +729,22 @@ static const Bitmap s_battery_charging = {
 
 
 static const Bitmap s_weather_sunny = {
-    10, 5,
-    "  #    #  "
-    "    ##    "
-    " # #  # # "
-    "    ##    "
-    "  #    #  "
+    8, 5,
+    "  # # # "
+    "   ###  "
+    " ### ###"
+    "   ###  "
+    "  # # # "
 };
 
 
-
 static const Bitmap s_weather_sunny_moon = {
-    6, 5,
-    "   ## "
-    " ##   "
-    "##    "
-    " ##   "
-    "  ### "
+    7, 5,
+    "    ## "
+    "  ##   "
+    " ###   "
+    "  ##   "
+    "   ### "
 };
 
 
@@ -760,11 +759,11 @@ static const Bitmap s_weather_mainly_clear = {
 
 static const Bitmap s_weather_mainly_clear_moon = {
     9, 5,
-    "  #      "
-    " #   ### "
-    " #  #####"
-    " #   ####"
-    "  #      "
+    "   #     "
+    " #  ###  "
+    " # ##### "
+    " #  #### "
+    "   #     "
 };
 
 
@@ -780,10 +779,10 @@ static const Bitmap s_weather_partly_cloudy = {
 
 static const Bitmap s_weather_partly_cloudy_moon = {
     11, 5,
-    "  #        "
-    " #     ##  "
-    " #   ##### "
-    "  # #######"
+    "   #       "
+    " ##    ##  "
+    " ##  ##### "
+    "   ########"
     "    ###### "
 };
 
@@ -810,8 +809,8 @@ static const Bitmap s_weather_drizzle_light = {
     "   ###   "
     " ######  "
     " ####### "
-    "   #     "
-    " #   #   "
+    "      #  "
+    " #       "
 };
 
 static const Bitmap s_weather_drizzle_moderate = {
@@ -819,7 +818,7 @@ static const Bitmap s_weather_drizzle_moderate = {
     "   ###   "
     " ######  "
     " ####### "
-    "    # #  "
+    "   #     "
     " #   #   "
 };
 
@@ -903,7 +902,7 @@ static const Bitmap s_weather_showers_slight = {
     "   ###   "
     " ######  "
     " ####### "
-    "    #    "
+    "    ##   "
     "   ##    "
 };
 
@@ -912,8 +911,8 @@ static const Bitmap s_weather_showers_moderate = {
     "   ###   "
     " ######  "
     " ####### "
-    "  #   #  "
     " ##  ##  "
+    "##  ##   "
 };
 
 static const Bitmap s_weather_showers_violent = {
@@ -921,7 +920,7 @@ static const Bitmap s_weather_showers_violent = {
     "   ###   "
     " ######  "
     " ####### "
-    " #  # #  "
+    " ## # ## "
     "## # ##  "
 };
 
