@@ -482,11 +482,11 @@ static void layer_draw(Layer* layer, GContext* ctx) {
           
             if (prevTemperature==999) {
               bmp = &s_bmp_small_digits[11];               
-            } else if (prevTemperature < temp_to_draw) {
+            } else if (prevTemperature < s_temperature) {
               bmp = &s_bmp_small_digits[12];               
-            } else if (prevTemperature > temp_to_draw) {
+            } else if (prevTemperature > s_temperature) {
               bmp = &s_bmp_small_digits[13];
-            } else if (prevTemperature == temp_to_draw) {
+            } else if (prevTemperature == s_temperature) {
               bmp = &s_bmp_small_digits[14];
             }       
 
@@ -599,7 +599,7 @@ Code	Description
             
             } else if (s_weather_condition_id == 71) {
                 weather_icon = &s_weather_snow_slight;
-            } else if (s_weather_condition_id == 72) {
+            } else if (s_weather_condition_id == 73) {
                 weather_icon = &s_weather_snow_moderate;
             } else if (s_weather_condition_id == 75) {
                 weather_icon = &s_weather_snow_heavy;
@@ -833,7 +833,7 @@ static void tick_handler(struct tm* tick_time, TimeUnits units_changed) {
             s_isNight=1;
           }
           
-        } // check that we have don't have defaults 
+        } // check that we don't have defaults 
       
         if (!clock24) {
             hour = hour % 12;
@@ -1053,7 +1053,7 @@ static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
   APP_LOG(APP_LOG_LEVEL_INFO, "Outbox send success!");
 }
 
-// / Weather
+// /Weather
 
 static void init() {
     srand(time(NULL));
