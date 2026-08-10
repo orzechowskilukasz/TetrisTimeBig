@@ -758,12 +758,12 @@ static const Bitmap s_weather_mainly_clear = {
 };
 
 static const Bitmap s_weather_mainly_clear_moon = {
-    9, 5,
-    "   #     "
-    " #  ###  "
-    " # ##### "
-    " #  #### "
-    "   #     "
+    11, 5,
+    "    ##  ## "
+    "  ##  #####"
+    " ###  #####"
+    "  ##   ### "
+    "   ###     "
 };
 
 
@@ -778,12 +778,12 @@ static const Bitmap s_weather_partly_cloudy = {
 
 
 static const Bitmap s_weather_partly_cloudy_moon = {
-    11, 5,
-    "   #       "
-    " ##    ##  "
-    " ##  ##### "
-    "   ########"
-    "    ###### "
+    13, 5,
+    "   #         "
+    " ##     ###  "
+    " ##   ###### "
+    "   # ####### "
+    "     ######  "
 };
 
 
@@ -818,8 +818,8 @@ static const Bitmap s_weather_drizzle_moderate = {
     "   ###   "
     " ######  "
     " ####### "
-    "   #     "
-    " #   #   "
+    "   #   # "
+    " #       "
 };
 
 static const Bitmap s_weather_drizzle_dense = {
@@ -827,8 +827,8 @@ static const Bitmap s_weather_drizzle_dense = {
     "   ###   "
     " ######  "
     " ####### "
+    " #   # # "
     " #  #  # "
-    "  #  #   "
 };
 
 

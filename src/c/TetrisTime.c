@@ -19,7 +19,9 @@
 #if defined(PBL_PLATFORM_BASALT)  // Below are defaults for legacy devices 
    #define X_TIME_OFFSET 0
 #endif
-
+#ifndef X_TIME_OFFSET
+   #define X_TIME_OFFSET 0
+#endif
 
 #include <pebble.h>
 #include "assert.h"
@@ -628,12 +630,13 @@ Code	Description
                 weather_icon = &s_weather_storm_heavy_hail;                  
              }
           
- //         weather_icon = &s_weather_sunny; // debug
+          // weather_icon = &s_weather_partly_cloudy_moon; // debug
       
           draw_bitmap(weather_icon, position, draw_y, s_fg_color);
 
           position += weather_icon->width + 1;
       
+      // debug  
 
       
      } // draw if there is real data 
