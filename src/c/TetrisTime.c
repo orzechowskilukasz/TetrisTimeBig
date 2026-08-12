@@ -29,6 +29,7 @@
 #include "field.h"
 #include "settings.h"
 #include "bitmap.h"
+#include "icon_anim.h"
 
 
 // real const
@@ -49,7 +50,6 @@ static int s_sunrise = 0;
 static int s_sunset = 0;
 static int s_temperature_max = 0;
 static int s_temperature_min = 0;
-static int dayTemperature = 999;
 static int prevTemperature = 999;
 
 typedef struct {
@@ -390,140 +390,35 @@ static void draw_digit_state_directy(Layer* layer, GContext* ctx, const DigitSta
     }
 }
 
-static void layer_draw(Layer* layer, GContext* ctx) {
-    if (s_second_draw_hack) {
-        GColor second_color = s_show_second_dot ? s_fg_color : s_bg_color;
-        draw_digit_state_directy(layer, ctx, &s_states[4], second_color);
-        s_second_draw_hack = false;
-        return;
+static void process_animation(void* data);
+
+// Status line element keys. Each element is a pure function of its key, which
+// is what lets icon_anim redraw the previous value during the blink phase.
+
+#define IA_TREND_UNKNOWN 0  // offsets into s_bmp_small_digits from index 11
+#define IA_TREND_RISING  1
+#define IA_TREND_FALLING 2
+#define IA_TREND_STEADY  3
+#define IA_TREND_BMP_BASE    11
+
+#define IA_BATTERY_LOW      1
+#define IA_BATTERY_CHARGING 2
+
+static const Bitmap* battery_icon_for(int key) {
+    switch (key) {
+    case IA_BATTERY_CHARGING: return &s_battery_charging;
+    case IA_BATTERY_LOW:      return &s_battery_empty;
+    default:                    return NULL;
     }
-    for (int i = 0; i < 4; ++i) {
-        draw_digit_state(&s_states[i]);
-    }
-    if (s_show_second_dot || s_states[4].falling || s_states[4].vanishing_frame) {
-        draw_digit_state(&s_states[4]);
-    }
-    draw_date();
-  
-    int position = 1; // x index of status line   
-    int draw_y =2;    // y index
+}
 
-  // Draw weather data
+// Only the three clear sky icons have a moon variant, so the night flag must
+// not enter the key for any other condition. Otherwise every sunrise and
+// sunset would animate an icon that does not actually change.
+static int weather_icon_key(int condition_id, int is_night) {
+    return condition_id * 2 + ((is_night && condition_id <= 2) ? 1 : 0);
+}
 
-  if (s_settings[WEATHER_ENABLED]) {
-  
-    if (s_temperature != 999) { // Only draw if we have received real data
-          const Bitmap* bmp = NULL;
-    
-          #if defined(PBL_PLATFORM_CHALK)  // Time Round 
-              position = 14;
-          #endif
-          #if defined(PBL_PLATFORM_GABBRO) // Round 2
-      
-              if (s_settings[WEATHER_DAY]) {
-                 position = 13;
-                 draw_y = 10;
-              }
-              else {
-                 position=18;
-              }
-            
-          #endif
-
-          int temp_to_draw = 0;
-      
-       
-          if ( abs(s_temperature_min) > abs(s_temperature_max) ) {
-            dayTemperature=s_temperature_min;
-          } else {
-            dayTemperature=s_temperature_max;            
-          }
-      
-
-          if (s_settings[WEATHER_DUMB_UNITS]) {
-            
-              temp_to_draw = (int)((s_temperature * 9.0 / 5.0) + 32.0);  // converting C to F
-              dayTemperature = (int)((dayTemperature * 9.0 / 5.0) + 32.0);  // converting C to F     
-            
-          } else {
-            
-              temp_to_draw = s_temperature;
-          };
-            
-      
-          // Negative Sign
-          if (temp_to_draw < 0) {
-              bmp = &s_bmp_small_digits[10]; 
-              draw_bitmap(bmp, position, draw_y, s_fg_color);
-              position += bmp->width + 1;
-              temp_to_draw = abs(temp_to_draw); // make positive for digit splitting
-          }
-
-          // Digits 
-      
-          if (temp_to_draw >= 100) {
-              bmp = &s_bmp_small_digits[temp_to_draw / 100];
-              draw_bitmap(bmp, position, draw_y, s_fg_color);
-              position += bmp->width + 1;
-          }
-          if (temp_to_draw >= 10) {
-              bmp = &s_bmp_small_digits[(temp_to_draw / 10) % 10];
-              draw_bitmap(bmp, position, draw_y, s_fg_color);
-              position += bmp->width + 1;
-          }
-        
-          bmp = &s_bmp_small_digits[temp_to_draw % 10];
-          draw_bitmap(bmp, position, draw_y, s_fg_color);
-          position += bmp->width + 1; 
-
-      
-    // day forecast
- 
-        if (s_settings[WEATHER_DAY]) {
-          // Slash
-          
-            if (prevTemperature==999) {
-              bmp = &s_bmp_small_digits[11];               
-            } else if (prevTemperature < s_temperature) {
-              bmp = &s_bmp_small_digits[12];               
-            } else if (prevTemperature > s_temperature) {
-              bmp = &s_bmp_small_digits[13];
-            } else if (prevTemperature == s_temperature) {
-              bmp = &s_bmp_small_digits[14];
-            }       
-
-            #if defined(PBL_PLATFORM_GABBRO)  // Time Round 2 
-              draw_bitmap(bmp, position, draw_y, s_fg_color);
-              position += bmp->width + 1;
-            #else
-              draw_bitmap(bmp, position, draw_y, s_fg_color);
-              position += bmp->width + 1;
-            #endif
-          
-          // Negative Sign
-          if (dayTemperature < 0) {
-              bmp = &s_bmp_small_digits[10]; 
-              draw_bitmap(bmp, position, draw_y, s_fg_color);
-              position += bmp->width + 1;
-              dayTemperature = abs(dayTemperature); // make positive for digit splitting
-          }
-      
-          if (dayTemperature >= 100) {
-              bmp = &s_bmp_small_digits[dayTemperature / 100];
-              draw_bitmap(bmp, position, draw_y, s_fg_color);
-              position += bmp->width + 1;
-          }
-          if (dayTemperature >= 10) {
-              bmp = &s_bmp_small_digits[(dayTemperature / 10) % 10];
-              draw_bitmap(bmp, position, draw_y, s_fg_color);
-              position += bmp->width + 1;
-          }
-        
-          bmp = &s_bmp_small_digits[dayTemperature % 10];
-          draw_bitmap(bmp, position, draw_y, s_fg_color);
-          position += bmp->width + 1; 
-        }
-      
 /*
 
 Code	Description
@@ -543,105 +438,178 @@ Code	Description
 96, 99 *	Thunderstorm with slight and heavy hail
 
 */
+
+static const Bitmap* weather_icon_for(int key) {
+    const int condition_id = key / 2;
+    const int is_night = key % 2;
+
+    const Bitmap* weather_icon = &s_weather_unknown; // default fallback
+
+    if (is_night) {
+        if (condition_id == 0) {
+            weather_icon = &s_weather_sunny_moon;
+        } else if (condition_id == 1) {
+            weather_icon = &s_weather_mainly_clear_moon;
+        } else if (condition_id == 2) {
+            weather_icon = &s_weather_partly_cloudy_moon;
+        }
+    } else {
+        if (condition_id == 0) {
+            weather_icon = &s_weather_sunny;
+        } else if (condition_id == 1) {
+            weather_icon = &s_weather_mainly_clear;
+        } else if (condition_id == 2) {
+            weather_icon = &s_weather_partly_cloudy;
+        }
+    }
+
+    if (condition_id == 3) {
+        weather_icon = &s_weather_cloudy;
+    } else if (condition_id == 45) {
+        weather_icon = &s_weather_foggy;
+    } else if (condition_id == 48) {
+        weather_icon = &s_weather_icy_fog;
+
+    } else if (condition_id == 51) {
+        weather_icon = &s_weather_drizzle_light;
+    } else if (condition_id == 53) {
+        weather_icon = &s_weather_drizzle_moderate;
+    } else if (condition_id == 55) {
+        weather_icon = &s_weather_drizzle_dense;
+    } else if (condition_id == 56) {
+        weather_icon = &s_weather_drizzle_light_freezing;
+    } else if (condition_id == 57) {
+        weather_icon = &s_weather_drizzle_dense_freezing;
+
+    } else if (condition_id == 61) {
+        weather_icon = &s_weather_rain_light;
+    } else if (condition_id == 63) {
+        weather_icon = &s_weather_rain_moderate;
+    } else if (condition_id == 65) {
+        weather_icon = &s_weather_rain_dense;
+    } else if (condition_id == 66) {
+        weather_icon = &s_weather_rain_light_freezing;
+    } else if (condition_id == 67) {
+        weather_icon = &s_weather_rain_dense_freezing;
+
+    } else if (condition_id == 71) {
+        weather_icon = &s_weather_snow_slight;
+    } else if (condition_id == 73) {
+        weather_icon = &s_weather_snow_moderate;
+    } else if (condition_id == 75) {
+        weather_icon = &s_weather_snow_heavy;
+    } else if (condition_id == 77) {
+        weather_icon = &s_weather_snowy;
+
+    } else if (condition_id == 80) {
+        weather_icon = &s_weather_showers_slight;
+    } else if (condition_id == 81) {
+        weather_icon = &s_weather_showers_moderate;
+    } else if (condition_id == 82) {
+        weather_icon = &s_weather_showers_violent;
+
+    } else if (condition_id >= 85 && condition_id < 87) {
+        weather_icon = &s_weather_snowy;
+
+    } else if (condition_id == 95) {
+        weather_icon = &s_weather_storm;
+    } else if (condition_id == 96) {
+        weather_icon = &s_weather_storm_hail;
+    } else if (condition_id == 99) {
+        weather_icon = &s_weather_storm_heavy_hail;
+    }
+
+    return weather_icon;
+}
+
+static void layer_draw(Layer* layer, GContext* ctx) {
+    if (s_second_draw_hack) {
+        GColor second_color = s_show_second_dot ? s_fg_color : s_bg_color;
+        draw_digit_state_directy(layer, ctx, &s_states[4], second_color);
+        s_second_draw_hack = false;
+        return;
+    }
+    for (int i = 0; i < 4; ++i) {
+        draw_digit_state(&s_states[i]);
+    }
+    if (s_show_second_dot || s_states[4].falling || s_states[4].vanishing_frame) {
+        draw_digit_state(&s_states[4]);
+    }
+    draw_date();
   
-    
-     // Weather icon selection
-       
-          const Bitmap* weather_icon = &s_weather_unknown; // default fallback
-     
-          if (s_isNight) {
+    int position = 1; // x index of status line
+    int draw_y =2;    // y index
 
-               if (s_weather_condition_id == 0)  {
-                   weather_icon = &s_weather_sunny_moon;
-                 } else if (s_weather_condition_id == 1) {
-                   weather_icon = &s_weather_mainly_clear_moon;          
-                 } else if (s_weather_condition_id == 2) {
-                   weather_icon = &s_weather_partly_cloudy_moon;        
-                 }
-            } else {
-              
-              if (s_weather_condition_id == 0)  {
-                   weather_icon = &s_weather_sunny;
-                 } else if (s_weather_condition_id == 1) {
-                   weather_icon = &s_weather_mainly_clear;          
-                 } else if (s_weather_condition_id == 2) {
-                   weather_icon = &s_weather_partly_cloudy;
-                 }
-            }
-            
-            if (s_weather_condition_id == 3) {
-                weather_icon = &s_weather_cloudy;
-            } else if (s_weather_condition_id == 45) {
-                weather_icon = &s_weather_foggy;
-            } else if (s_weather_condition_id == 48) {
-                weather_icon = &s_weather_icy_fog;
+  // Draw weather data
 
-            } else if (s_weather_condition_id == 51) {
-                weather_icon = &s_weather_drizzle_light;
-            } else if (s_weather_condition_id == 53) {
-                weather_icon = &s_weather_drizzle_moderate;
-            } else if (s_weather_condition_id == 55) {
-                weather_icon = &s_weather_drizzle_dense;
-            } else if (s_weather_condition_id == 56) {
-                weather_icon = &s_weather_drizzle_light_freezing;
-            } else if (s_weather_condition_id == 57) {
-                weather_icon = &s_weather_drizzle_dense_freezing;
+  if (s_settings[WEATHER_ENABLED] && s_temperature != 999) { // Only draw if we have received real data
 
-          
-            } else if (s_weather_condition_id == 61) {
-               weather_icon = &s_weather_rain_light;
-            } else if (s_weather_condition_id == 63) {
-                weather_icon = &s_weather_rain_moderate;
-            } else if (s_weather_condition_id == 65) {
-                weather_icon = &s_weather_rain_dense;
-             } else if (s_weather_condition_id == 66) {
-                weather_icon = &s_weather_rain_light_freezing;
-            } else if (s_weather_condition_id == 67) {
-                weather_icon = &s_weather_rain_dense_freezing;
-            
-            } else if (s_weather_condition_id == 71) {
-                weather_icon = &s_weather_snow_slight;
-            } else if (s_weather_condition_id == 73) {
-                weather_icon = &s_weather_snow_moderate;
-            } else if (s_weather_condition_id == 75) {
-                weather_icon = &s_weather_snow_heavy;
-            } else if (s_weather_condition_id == 77) {
-                weather_icon = &s_weather_snowy;                  
-            
-            } else if (s_weather_condition_id == 80) {
-                weather_icon = &s_weather_showers_slight;           
-            } else if (s_weather_condition_id == 81) {
-                weather_icon = &s_weather_showers_moderate;                       
-            } else if (s_weather_condition_id == 82) {
-                weather_icon = &s_weather_showers_violent;                       
-            
-            
-            } else if (s_weather_condition_id >= 85 && s_weather_condition_id < 87) {
-                weather_icon = &s_weather_snowy;
-            
-            
-            
-          
-             } else if (s_weather_condition_id == 95) {
-                weather_icon = &s_weather_storm;                  
-             } else if (s_weather_condition_id == 96) {
-                weather_icon = &s_weather_storm_hail;                              
-             } else if (s_weather_condition_id == 99) {
-                weather_icon = &s_weather_storm_heavy_hail;                  
-             }
-          
-          // weather_icon = &s_weather_partly_cloudy_moon; // debug
-      
-          draw_bitmap(weather_icon, position, draw_y, s_fg_color);
+          #if defined(PBL_PLATFORM_CHALK)  // Time Round
+              position = 14;
+          #endif
+          #if defined(PBL_PLATFORM_GABBRO) // Round 2
 
-          position += weather_icon->width + 1;
-      
-      // debug  
+              if (s_settings[WEATHER_DAY]) {
+                 position = 13;
+                 draw_y = 10;
+              }
+              else {
+                 position=18;
+              }
 
-      
-     } // draw if there is real data 
+          #endif
 
-  } // draw weather if enabled  
+          // The day forecast shows whichever end of the range is more extreme,
+          // that being the value worth preparing for.
+          int day_temperature = (abs(s_temperature_min) > abs(s_temperature_max))
+                              ? s_temperature_min : s_temperature_max;
+          int temp_to_draw = s_temperature;
+
+          if (s_settings[WEATHER_DUMB_UNITS]) {  // converting C to F
+              temp_to_draw = (int)((temp_to_draw * 9.0 / 5.0) + 32.0);
+              day_temperature = (int)((day_temperature * 9.0 / 5.0) + 32.0);
+          }
+
+          // Current temperature
+          {
+              const int want = temp_to_draw;
+              const int show = icon_anim_track(IA_TEMPERATURE, want, icon_number_width(want));
+              icon_draw_number(IA_TEMPERATURE, &position, show, draw_y, s_fg_color);
+          }
+
+          // Day forecast
+          if (s_settings[WEATHER_DAY]) {
+
+              // Trend
+              int want = IA_TREND_UNKNOWN;
+              if (prevTemperature == 999) {
+                  want = IA_TREND_UNKNOWN;
+              } else if (prevTemperature < s_temperature) {
+                  want = IA_TREND_RISING;
+              } else if (prevTemperature > s_temperature) {
+                  want = IA_TREND_FALLING;
+              } else {
+                  want = IA_TREND_STEADY;
+              }
+              const int show = icon_anim_track(IA_TREND, want, BMP_SMALL_DIGIT_WIDTH);
+              icon_draw_bitmap(IA_TREND, &s_bmp_small_digits[IA_TREND_BMP_BASE + show],
+                               &position, draw_y, s_fg_color, 1);
+
+              // Day temperature
+              const int day_want = day_temperature;
+              const int day_show = icon_anim_track(IA_DAY_TEMPERATURE, day_want,
+                                                   icon_number_width(day_want));
+              icon_draw_number(IA_DAY_TEMPERATURE, &position, day_show, draw_y, s_fg_color);
+          }
+
+          // Weather icon
+          {
+              const int want = weather_icon_key(s_weather_condition_id, s_isNight);
+              const int show = icon_anim_track(IA_WEATHER, want, weather_icon_for(want)->width);
+              icon_draw_bitmap(IA_WEATHER, weather_icon_for(show), &position, draw_y, s_fg_color, 1);
+          }
+
+  } // draw weather if enabled and there is real data
 
 
 /*  
@@ -690,44 +658,68 @@ Code	Description
 */  
   
     if (s_settings[ICON_CONNECTION]) {
-        if (!bluetooth_connection_service_peek()) {
-            const Bitmap* bt_icon = &s_bluetooth;
-            draw_bitmap(bt_icon, position, draw_y, s_fg_color);
-            position += bt_icon->width + 1;
+        const int want = bluetooth_connection_service_peek() ? IA_KEY_NONE : 1;
+        const int show = icon_anim_track(IA_BLUETOOTH, want,
+                                         (want == IA_KEY_NONE) ? 0 : s_bluetooth.width);
+        if (show != IA_KEY_NONE) {
+          
+          #if defined(PBL_PLATFORM_GABBRO) // Round 2
+             position = 42;
+             draw_y = 18;
+             icon_draw_bitmap(IA_BLUETOOTH, &s_bluetooth, &position, draw_y, s_fg_color, 1);
+          #else 
+             icon_draw_bitmap(IA_BLUETOOTH, &s_bluetooth, &position, draw_y, s_fg_color, 1);
+          #endif
         }
     }
     if (s_settings[ICON_BATTERY]) {
-        const Bitmap* bmp = NULL;
         BatteryChargeState charge_state = battery_state_service_peek();
+        int want = IA_KEY_NONE;
         if (charge_state.is_charging) {
-            bmp = &s_battery_charging;
+            want = IA_BATTERY_CHARGING;
         } else if (charge_state.charge_percent <= 20) {
-            bmp = &s_battery_empty;
+            want = IA_BATTERY_LOW;
         }
+        const Bitmap* want_bmp = battery_icon_for(want);
+        const int show = icon_anim_track(IA_BATTERY, want, want_bmp ? want_bmp->width : 0);
+        const Bitmap* bmp = battery_icon_for(show);
         if (bmp) {
-          
-            if (position> FIELD_WIDTH - bmp->width) { 
 
-              draw_y = 8; 
-              draw_bitmap(bmp, FIELD_WIDTH - bmp->width, draw_y, s_fg_color);
-              draw_y = 2;
-              
-            } else { 
-              draw_bitmap(bmp, FIELD_WIDTH - bmp->width, draw_y, s_fg_color);
+          #if defined(PBL_PLATFORM_GABBRO) // Round 2
+             position = 42;
+             draw_y = 24;
+             icon_draw_bitmap_at(IA_BATTERY, bmp, position, draw_y, s_fg_color);
+          #else 
+            if (position > FIELD_WIDTH - bmp->width) {
+
+              icon_draw_bitmap_at(IA_BATTERY, bmp, FIELD_WIDTH - bmp->width, 8, s_fg_color);
+
+            } else {
+              icon_draw_bitmap_at(IA_BATTERY, bmp, FIELD_WIDTH - bmp->width, draw_y, s_fg_color);
             }
+          #endif
+          
+          
         }
     }
 
-  
-  
-  
-  
   field_flush(layer, ctx);
 
-} 
+    // A status element that just changed needs the frame pump running. The
+    // change is only detected here, which can be after is_animating() was last
+    // consulted, so start the timer rather than wait for the next event.
+    if (!s_animating && icon_anim_active()) {
+        s_animating = true;
+        app_timer_register(s_settings[CUSTOM_ANIMATION_TIMEOUT_MS], process_animation, NULL);
+    }
+
+}
 
 static int is_animating() {
     if (s_date_frame) {
+        return 1;
+    }
+    if (icon_anim_active()) {
         return 1;
     }
     for (int i = 0; i < STATE_COUNT; ++i) {
@@ -752,6 +744,7 @@ static void process_animation(void* data) {
     for (int i = 0; i < STATE_COUNT; ++i) {
         state_step(&s_states[i]);
     }
+    icon_anim_step();
     layer_mark_dirty(s_layer);
     if (is_animating()) {
         app_timer_register(s_settings[CUSTOM_ANIMATION_TIMEOUT_MS], process_animation, NULL);
@@ -941,6 +934,10 @@ static void on_settings_changed() {
     } else {
         s_date_frame = 0;
     }
+
+    // A settings change is not a data change, so reseed the status icons and
+    // only let them animate in when the initial animation is wanted.
+    icon_anim_reset(s_settings[SKIP_INITIAL_ANIMATION]);
 
     tick_timer_service_unsubscribe();
     if (s_settings[ANIMATE_SECOND_DOT]) {
