@@ -24,6 +24,15 @@
 #endif
 
 #include <pebble.h>
+
+// Aplite has 24 KB of app RAM for code and data together and the build only
+// just fits. Debug logging is dead weight on a release watchface, and its
+// format strings and call sites are worth about 0.9 KB here, so drop it.
+#if defined(PBL_PLATFORM_APLITE)
+    #undef APP_LOG
+    #define APP_LOG(...) ((void)0)
+#endif
+
 #include "assert.h"
 #include "digit.h"
 #include "field.h"
@@ -685,7 +694,7 @@ static void layer_draw(Layer* layer, GContext* ctx) {
         const Bitmap* bmp = battery_icon_for(show);
         if (bmp) {
 
-          #if defined(PBL_PLATFORM_GABBRO) // Round 2
+            #if defined(PBL_PLATFORM_GABBRO) // Round 2
              position = 42;
              draw_y = 24;
              icon_draw_bitmap_at(IA_BATTERY, bmp, position, draw_y, s_fg_color);
@@ -698,8 +707,6 @@ static void layer_draw(Layer* layer, GContext* ctx) {
               icon_draw_bitmap_at(IA_BATTERY, bmp, FIELD_WIDTH - bmp->width, draw_y, s_fg_color);
             }
           #endif
-          
-          
         }
     }
 

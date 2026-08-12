@@ -20,9 +20,18 @@
 // ---------------------------------------------------------------------------
 // Animation tuning
 // ---------------------------------------------------------------------------
+// Aplite fits code and data into 24 KB together, so phase 2 is compiled out
+// there and a changed icon simply reappears once it has finished blinking.
+// Every other watch gets both phases.
+#if defined(PBL_PLATFORM_APLITE)
+    #define IA_SWIRL_ENABLED 0
+#else
+    #define IA_SWIRL_ENABLED 1
+#endif
+
 #define IA_BLINK_MS       2000  // phase 1 duration
 #define IA_BLINK_COUNT       4  // on/off cycles within phase 1
-#define IA_SWIRL_MS       3000  // phase 2 duration
+#define IA_SWIRL_MS       2000  // phase 2 duration
 #define IA_SWIRL_SLOPE_X     1  // tilt of the colour wave across the icon
 #define IA_SWIRL_SLOPE_Y     2
 #define IA_SWIRL_SPEED       1  // colour bands travelled per frame
@@ -73,6 +82,7 @@ static int icon_anim_frames(int duration_ms) {
     return frames < IA_MIN_FRAMES ? IA_MIN_FRAMES : frames;
 }
 
+#if IA_SWIRL_ENABLED
 // Settling order of a cell, spread evenly over 0..255. Deterministic, which is
 // what keeps the swirl free of any per pixel state.
 static uint8_t icon_anim_hash(int x, int y) {
@@ -80,6 +90,14 @@ static uint8_t icon_anim_hash(int x, int y) {
     h ^= h >> 15;
     return (uint8_t)(h >> 7);
 }
+#endif
+
+// Phase entered once the outgoing icon has finished blinking away.
+#if IA_SWIRL_ENABLED
+    #define IA_PHASE_AFTER_BLINK IA_PHASE_SWIRL
+#else
+    #define IA_PHASE_AFTER_BLINK IA_PHASE_IDLE
+#endif
 
 // Colour of one cell for the current frame. Returns false if the cell must be
 // left as background.
@@ -93,6 +111,7 @@ static bool icon_anim_cell(const IconAnim* a, int x, int y, GColor base, GColor*
         const int half = (a->frame * 2 * IA_BLINK_COUNT) / icon_anim_frames(IA_BLINK_MS);
         return (half % 2) == 0;
     }
+#if IA_SWIRL_ENABLED
     case IA_PHASE_SWIRL: {
         const int progress = (a->frame * 256) / icon_anim_frames(IA_SWIRL_MS);
         if (progress >= (int)icon_anim_hash(x, y)) {
@@ -110,6 +129,7 @@ static bool icon_anim_cell(const IconAnim* a, int x, int y, GColor base, GColor*
             return (band % TETRIMINO_COUNT) < IA_MONO_LIT_BANDS;
         #endif
     }
+#endif
     default:
         return true;
     }
@@ -164,7 +184,7 @@ static int icon_anim_track(IconId id, int key, int width) {
             a->shown_w = width;
             a->slot = width;
             a->frame = 0;
-            a->phase = (key == IA_KEY_NONE) ? IA_PHASE_IDLE : IA_PHASE_SWIRL;
+            a->phase = (key == IA_KEY_NONE) ? IA_PHASE_IDLE : IA_PHASE_AFTER_BLINK;
         } else {
             a->slot = (width > a->shown_w) ? width : a->shown_w;
             a->frame = 0;
@@ -205,7 +225,10 @@ static void icon_anim_step() {
                     a->phase = IA_PHASE_IDLE;
                     a->slot = 0;  // the element is gone, release its space
                 } else {
-                    a->phase = IA_PHASE_SWIRL;  // slot stays reserved
+                    a->phase = IA_PHASE_AFTER_BLINK;  // slot stays reserved
+                    if (a->phase == IA_PHASE_IDLE) {
+                        a->slot = a->shown_w;  // no phase 2, settle immediately
+                    }
                 }
             }
             break;

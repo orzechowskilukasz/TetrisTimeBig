@@ -1,4 +1,10 @@
-#define USE_ASSERTS 1
+// Aplite is tight enough on RAM that the assertion strings matter. Everywhere
+// else the safety net is worth its weight.
+#if defined(PBL_PLATFORM_APLITE)
+    #define USE_ASSERTS 0
+#else
+    #define USE_ASSERTS 1
+#endif
 
 #if USE_ASSERTS == 1
 
@@ -10,8 +16,9 @@
 
 #else
 
-static inline _nop() {}
-#define ASSERT2(condition, message, ...) _nop()
+// sizeof does not evaluate its operand, so the condition still costs nothing
+// at runtime while anything it mentions still counts as used.
+#define ASSERT2(condition, message, ...) ((void)sizeof(condition))
 
 #endif
 
