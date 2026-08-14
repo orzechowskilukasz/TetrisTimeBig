@@ -108,6 +108,106 @@ static const Bitmap s_small_months[] = {
         "##  ### ###"
     },
 };
+
+static const Bitmap s_small_months_PL[] = {
+    {
+        13, BMP_SMALL_HEIGHT,
+        "### ### #   #"
+        "#    #   # # "
+        "###  #    #  "
+        "  #  #    #  "
+        "###  #    #  "
+    },
+    {
+        11, BMP_SMALL_HEIGHT,
+        "#   # # ###"
+        "#   # #  # "
+        "#   # #  # "
+        "#   # #  # "
+        "### ###  # "
+    },
+    {
+        13, BMP_SMALL_HEIGHT,
+        "#   # ### ###"
+        "## ## # # # #"
+        "# # # ### ## "
+        "#   # # # # #"
+        "#   # # # # #"
+    },
+    {
+        12, BMP_SMALL_HEIGHT,
+        "#  # #   # #"
+        "# #  #   # #"
+        "##   # # # #"
+        "# #  ## ## #"
+        "#  # #   # #"
+    },
+    {
+        13, BMP_SMALL_HEIGHT,
+        "#   # ### ###"
+        "## ## # #   #"
+        "# # # ###   #"
+        "#   # # # # #"
+        "#   # # # ###"
+    },
+    {
+        12, BMP_SMALL_HEIGHT,
+        "### #### ###"
+        "#     #  #  "
+        "#    #   ##"
+        "#   #    #  "
+        "### ###  ###" 
+    },
+    {
+        10, BMP_SMALL_HEIGHT,
+        "#   # ### "
+        "#   # #  #"
+        "#   # ##  "
+        "#   # #   "
+        "### # #   "
+    },
+    {
+        9, BMP_SMALL_HEIGHT,
+        "### # ###"
+        "#   # #  "
+        "### # ## "
+        "  # # #  "
+        "### # ###"
+    },
+    {
+        15, BMP_SMALL_HEIGHT,
+        "#   # ###  ####"
+        "#   # #  #   # "
+        "# # # ###   #  " 
+        "## ## #  # #   "
+        "#   # #  # ### "
+    },
+    {
+        12, BMP_SMALL_HEIGHT,
+        "### ### ####"
+        "# # # #   # "
+        "### ###  #  " 
+        "#   # # #   "
+        "#   # # ### "    
+    },
+    {
+        11, BMP_SMALL_HEIGHT,
+        "#   # #  ##"
+        "#   # # # "
+        "#   # #  # "
+        "#   # #   #"
+        "### # # ## "
+    },
+    {
+        13, BMP_SMALL_HEIGHT,
+        " ### ###  # #"
+        "#    #  # # #"
+        "# ## ###  # #"
+        "#  # #  # # #"
+        " ##  #  # ###"
+    },
+};
+
 STATIC_ASSERT(ARRAY_SIZE(s_small_months) == 12);
 
 static const Bitmap s_bmp_small_digits[] = {
@@ -300,6 +400,75 @@ static const Bitmap s_small_marked_weekdays[] = {
       " #### "
     },
 };
+
+
+static const Bitmap s_small_marked_weekdays_PL[] = {
+    { 7, 5,
+      " #   # "
+      " ##  # "
+      " # # # "
+      " #  ## "
+      " #   # "
+    },
+    { 5, 5,
+      " ### "
+      " # # "
+      " ### "
+      " #   "
+      " #   "
+    },
+    { 7, 5,
+      " #   # "
+      " #   # "
+      " #   # "
+      " # # # "
+      " ## ## "
+    },
+    { 5, 6,
+      "  #  "
+      " ### "
+      " #   "
+      " ### "
+      "   # "
+      " ### "
+    },
+    { 5, 5,
+      " ### "
+      " #   "
+      " #   "
+      " #   "
+      " ### "
+    },
+    { 5, 5,
+      " ### "
+      " # # "
+      " ### "
+      " #   "
+      " #   "
+    },
+    { 5, 5,
+      " ### "
+      " #   "
+      " ### "
+      "   # "
+      " ### "
+    },
+    { 4, 5,
+      "    "
+      "    "
+      " ## "
+      " ## "
+      "    "
+    },
+    { 6, 5,
+      "      "
+      " #### "
+      " #  # "
+      " #  # "
+      " #### "
+    },
+};
+
 STATIC_ASSERT(ARRAY_SIZE(s_small_marked_weekdays) == 9);
 
 static const Bitmap s_small_weekdays[] = {
@@ -361,6 +530,67 @@ static const Bitmap s_small_weekdays[] = {
     },
 };
 STATIC_ASSERT(ARRAY_SIZE(s_small_weekdays) == 7);
+
+static const Bitmap s_small_weekdays_PL[] = {
+    {
+        12, BMP_SMALL_HEIGHT,
+        "#  # ### ###"
+        "## #  #  #  "
+        "# ##  #  ## "
+        "#  #  #  #  "
+        "#  # ### ###"
+    },
+    {
+        12, BMP_SMALL_HEIGHT,
+        "### ### #  #"
+        "# # # # ## #"
+        "### # # # ##"
+        "#   # # #  #"
+        "#   ### #  #"
+    },
+    {
+        13, BMP_SMALL_HEIGHT,
+        "#   # ### ###"
+        "#   #  #  # #"
+        "#   #  #  # #"
+        "# # #  #  # #"
+        "## ##  #  ###"
+    },
+    {
+        11, BMP_SMALL_HEIGHT,
+        "### ### ###"
+        "#   # # # #"
+        "### ##  # #"
+        "  # # # # #"
+        "### # # ###"
+    },
+    {
+        13, BMP_SMALL_HEIGHT,
+        "### ### #   #"
+        "#     # #   #"
+        "#    #  #   #"
+        "#   #   # # #"
+        "### ### ## ##"
+    },
+    {
+        11, BMP_SMALL_HEIGHT,
+        "### ### ###"
+        "# #  #  # #"
+        "###  #  ###"
+        "#    #  # #"
+        "#   ### # #"
+    },
+    {
+        11, BMP_SMALL_HEIGHT,
+        "### ### ## "
+        "#   # # # #"
+        "### # # ## "
+        "  # # # # #"
+        "### ### ## "
+    },
+};
+
+STATIC_ASSERT(ARRAY_SIZE(s_small_weekdays_PL) == 7);
 
 static const Bitmap s_large_months[] = {
     {
@@ -473,6 +703,119 @@ static const Bitmap s_large_months[] = {
     },
 };
 STATIC_ASSERT(ARRAY_SIZE(s_large_months) == 12);
+
+
+static const Bitmap s_large_months_PL[] = {
+    {
+        13, BMP_LARGE_HEIGHT,
+        " ##          "
+        "#   ### #   #"
+        " ##   #  # # "
+        "   #  #   #  "
+        "#  #  #   #  "
+        " ##   #   #  "
+    },
+    {
+        11, BMP_LARGE_HEIGHT,
+        "#          "
+        "#   # # ###"
+        "#   # #  # "
+        "#   # #  # "
+        "#   # #  # "
+        "###  ##  # "
+    },
+    {
+        15, BMP_LARGE_HEIGHT,
+        "#   #          "
+        "## ##  ##  ### "
+        "# # # #  # #  #"
+        "#   # #### ### "
+        "#   # #  # #  #"
+        "#   # #  # #  #"
+    },
+    {
+        12, BMP_LARGE_HEIGHT,
+        "#  #        "
+        "# #  #   # #"
+        "##   #   # #"
+        "##   #   # #"
+        "# #  # # # #"
+        "#  #  # #  #"
+    },
+    {
+        14, BMP_LARGE_HEIGHT,
+        "#   #         "
+        "## ##  ##    #"
+        "# # # #  #   #"
+        "#   # ####   #"
+        "#   # #  # # #"
+        "#   # #  #  ##"
+    },
+    {
+        11, BMP_LARGE_HEIGHT,
+        " ###        "
+        "#    ### ###"
+        "#      # #  "
+        "#     #  ## "
+        "#    #   #  "
+        " ### ### ###"
+    },
+    {
+        10, BMP_LARGE_HEIGHT,
+        "#          "
+        "#   # ### "
+        "#   # #  #"
+        "#   # ### "
+        "#   # #   "
+        "### # #   "
+    },
+    {
+        10, BMP_LARGE_HEIGHT,
+        " ##       "
+        "#    # ###"
+        " ##  # #  "
+        "   # # ## "
+        "#  # # #  "
+        " ##  # ###"
+    },
+    {
+        13, BMP_LARGE_HEIGHT,
+        "#   #        "
+        "#   # ### ###"
+        "#   # # #   #"
+        "# # # ##   # "
+        "## ## # # #  "
+        "#   # # # ###"
+    },
+    {
+        12, BMP_LARGE_HEIGHT,
+        "###        #"
+        "#  # ##  ###"
+        "### #  #   #"
+        "#   ####  # "
+        "#   #  # #  "
+        "#   #  # ###"
+    },
+    {
+        9, BMP_LARGE_HEIGHT,
+        "#        "
+        "#   # ###"
+        "#   # #  "
+        "#   # ###"
+        "#   #   #"
+        "### # ###"
+    },
+    {
+        12, BMP_LARGE_HEIGHT,
+        " ###        "
+        "#    ##  # #"
+        "# ## # # # #"
+        "#  # ##  # #"
+        "#  # # # # #"
+        " ### # # ###"
+    },
+};
+STATIC_ASSERT(ARRAY_SIZE(s_large_months_PL) == 12);
 
 static const Bitmap s_bmp_large_digits[] = {
     {
@@ -635,6 +978,75 @@ static const Bitmap s_large_marked_weekdays[9] = {
 };
 STATIC_ASSERT(ARRAY_SIZE(s_large_marked_weekdays) == 9);
 
+static const Bitmap s_large_marked_weekdays_PL[9] = {
+    { 8, 5,
+      " #    # "
+      " ##   # "
+      " # #  # "
+      " #  # # "
+      " #   ## "
+    },
+    { 7, 5,
+      " ####  "
+      " #   # "
+      " ####  "
+      " #     "
+      " #     "
+    },
+    { 7, 5,
+      " #   # "
+      " #   # "
+      " # # # "
+      " # # # "
+      "  # #  "
+    },
+    { 6, 6,  
+      "   #  "
+      " #### "
+      " #    "
+      " #### "
+      "    # "
+      " #### "
+    },
+    { 6, 5,
+      " #### "
+      " #    "
+      " #    "
+      " #    "
+      " #### "
+    },
+    { 7, 5,
+      " ####  "
+      " #   # "
+      " ####  "
+      " #     "
+      " #     "
+    },
+    { 6, 5,
+      " #### "
+      " #    "
+      " #### "
+      "    # "
+      " #### "
+    },
+    { 4, 5,
+      "    "
+      "    "
+      " ## "
+      " ## "
+      "    "
+    },
+    { 6, 5,
+      "      "
+      " #### "
+      " #  # "
+      " #  # "
+      " #### "
+    },
+};
+STATIC_ASSERT(ARRAY_SIZE(s_large_marked_weekdays_PL) == 9);
+
+
 static const Bitmap s_large_weekdays[] = {
     {
         14, BMP_LARGE_HEIGHT,
@@ -701,6 +1113,76 @@ static const Bitmap s_large_weekdays[] = {
     },
 };
 STATIC_ASSERT(ARRAY_SIZE(s_large_weekdays) == 7);
+
+
+static const Bitmap s_large_weekdays_PL[] = {
+    {
+        11, BMP_LARGE_HEIGHT,
+        "#  #       "
+        "## # #  ## "
+        "# ##   # # "
+        "#  # # ### "
+        "#  # # #   "
+        "#  # #  ## "
+    },
+    {
+        12, BMP_LARGE_HEIGHT,
+        "###         "
+        "#  # ## # # "
+        "### #  # # #"
+        "#   #  # # #"
+        "#   #  # # #"
+        "#    ##  # #"
+    },
+    {
+        14, BMP_LARGE_HEIGHT,
+        "#   #         "
+        "#   #  #   ## "
+        "#   # ### #  #"
+        "# # #  #  #  #"
+        "## ##  #  #  #"
+        "#   #   #  ## "
+    },
+    {
+        12, BMP_LARGE_HEIGHT,
+        " ###        "
+        "#    # # ## "
+        " ##  ## #  #"
+        "   # #  #  #"
+        "#  # #  #  #"
+        " ##  #   ## "
+    },
+    {
+        14, BMP_LARGE_HEIGHT,
+        " ###          "
+        "#    ### #   #"
+        "#      # #   #"
+        "#     #  #   #"
+        "#    #   # # #"
+        " ### ###  # # "
+    },
+    {
+        11, BMP_LARGE_HEIGHT,
+        "###        "
+        "#  # #  ## "
+        "###      # "
+        "#    # ### "
+        "#    # # # "
+        "#    # ### "
+    },
+    {
+        13, BMP_LARGE_HEIGHT,
+        " ###         "
+        "#     ##  #  "
+        " ##  #  # ###"
+        "   # #  # # #"
+        "#  # #  # # #"
+        " ##   ##  ###"
+    },
+};
+STATIC_ASSERT(ARRAY_SIZE(s_large_weekdays_PL) == 7);
+
+
 
 static const Bitmap s_bluetooth = {
     4, 5,

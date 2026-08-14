@@ -27,7 +27,8 @@
 
 // Aplite has 24 KB of app RAM for code and data together and the build only
 // just fits. Debug logging is dead weight on a release watchface, and its
-// format strings and call sites are worth about 0.9 KB here, so drop it.
+// format strings and call sites are worth about 0.9 KB here, so I drop it.
+
 #if defined(PBL_PLATFORM_APLITE)
     #undef APP_LOG
     #define APP_LOG(...) ((void)0)
@@ -204,13 +205,45 @@ static void state_step(DigitState* state) {
 
 static void draw_weekday_line(int height, GColor color) {
     const Bitmap* weekdays = s_settings[LARGE_DATE_FONT] ? s_large_weekdays : s_small_weekdays;
+  
+    // initial locale support
+  
+    #if defined(PBL_PLATFORM_APLITE)  // no locale for aplite, too low RAM 
+
+    #else 
+  
+    if (strcmp(i18n_get_system_locale(), "pl_PL") == 0) {
+     
+       if (weekdays == s_small_weekdays) { weekdays = s_small_weekdays_PL; } else { weekdays = s_large_weekdays_PL;  }
+     
+    }  
+
+   #endif
+  
     const Bitmap* bmp = &weekdays[s_weekday];
+  
     draw_bitmap(bmp, (FIELD_WIDTH - bmp->width + 1) / 2, height, color);
+  
+  
 }
 
 static void draw_marked_weekday_line(int height, GColor color, bool use_letter) {
     const Bitmap* marked_weekdays = s_settings[LARGE_DATE_FONT] ? s_large_marked_weekdays : s_small_marked_weekdays;
-    
+
+     // initial locale support
+  
+    #if defined(PBL_PLATFORM_APLITE)  // no locale for aplite, too low RAM 
+
+    #else 
+  
+    if (strcmp(i18n_get_system_locale(), "pl_PL") == 0) {
+     
+       if (marked_weekdays == s_small_marked_weekdays) { marked_weekdays = s_small_marked_weekdays_PL; } else { marked_weekdays = s_large_marked_weekdays_PL;  }
+     
+    }  
+
+   #endif
+  
     const int first_weekday = s_settings[DATE_FIRST_WEEKDAY];
     int width = 0;
     for (int i = 0; i < 7; ++i) {
@@ -234,6 +267,22 @@ static void draw_date_line(int height, GColor color) {
     const Bitmap* bmp_digits = s_settings[LARGE_DATE_FONT] ? s_bmp_large_digits : s_bmp_small_digits;
     const int bmp_digit_width = s_settings[LARGE_DATE_FONT] ? BMP_LARGE_DIGIT_WIDTH : BMP_SMALL_DIGIT_WIDTH;
     
+    // initial locale support
+  
+  
+    #if defined(PBL_PLATFORM_APLITE)  // no locale for aplite, too low RAM 
+
+    #else 
+  
+     if (strcmp(i18n_get_system_locale(), "pl_PL") == 0) {
+       
+        if (months == s_small_months) { months = s_small_months_PL; } else { months = s_large_months_PL;  }
+        if (weekdays == s_small_weekdays) { weekdays = s_small_weekdays_PL; } else { weekdays = s_large_weekdays_PL; }
+     
+     }  
+  
+   #endif
+  
     // digit
     int width = bmp_digit_width;
     if (s_day >= 10) {
