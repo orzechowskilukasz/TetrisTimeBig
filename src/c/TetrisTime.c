@@ -47,7 +47,7 @@
 #define ANIMATION_SPACING_Y (TETRIMINO_MASK_SIZE + 1)
 #define MAX_TETRIMINO_AGE_STEPS 3
 #define MAX_TETRIMINO_AGE (MAX_TETRIMINO_AGE_STEPS * s_settings[CUSTOM_ANIMATION_TETRIMINO_AGE_STEP_FRAMES])
-
+#define ADAM_MODE 0 // Special mode of operation for my son 
 
 // debug settings
 #define DYNAMIC_ASSEMBLY 0
@@ -600,6 +600,9 @@ static void layer_draw(Layer* layer, GContext* ctx) {
 
   // Draw weather data
 
+  
+  if (ADAM_MODE==0) {
+  
   if (s_settings[WEATHER_ENABLED] && s_temperature != 999) { // Only draw if we have received real data
 
           #if defined(PBL_PLATFORM_CHALK)  // Time Round
@@ -630,8 +633,8 @@ static void layer_draw(Layer* layer, GContext* ctx) {
 
           // Current temperature
           {
-              const int want = temp_to_draw;
-              const int show = icon_anim_track(IA_TEMPERATURE, want, icon_number_width(want));
+              const int reserve = temp_to_draw;
+              const int show = icon_anim_track(IA_TEMPERATURE, reserve, icon_number_width(reserve));
               icon_draw_number(IA_TEMPERATURE, &position, show, draw_y, s_fg_color);
           }
 
@@ -639,38 +642,38 @@ static void layer_draw(Layer* layer, GContext* ctx) {
           if (s_settings[WEATHER_DAY]) {
 
               // Trend
-              int want = IA_TREND_UNKNOWN;
+              int reserve = IA_TREND_UNKNOWN;
               if (prevTemperature == 999) {
-                  want = IA_TREND_UNKNOWN;
+                  reserve = IA_TREND_UNKNOWN;
               } else if (prevTemperature < s_temperature) {
-                  want = IA_TREND_RISING;
+                  reserve = IA_TREND_RISING;
               } else if (prevTemperature > s_temperature) {
-                  want = IA_TREND_FALLING;
+                  reserve = IA_TREND_FALLING;
               } else {
-                  want = IA_TREND_STEADY;
+                  reserve = IA_TREND_STEADY;
               }
-              const int show = icon_anim_track(IA_TREND, want, BMP_SMALL_DIGIT_WIDTH);
+              const int show = icon_anim_track(IA_TREND, reserve, BMP_SMALL_DIGIT_WIDTH);
               icon_draw_bitmap(IA_TREND, &s_bmp_small_digits[IA_TREND_BMP_BASE + show],
                                &position, draw_y, s_fg_color, 1);
 
               // Day temperature
-              const int day_want = day_temperature;
-              const int day_show = icon_anim_track(IA_DAY_TEMPERATURE, day_want,
-                                                   icon_number_width(day_want));
+              const int day_reserve = day_temperature;
+              const int day_show = icon_anim_track(IA_DAY_TEMPERATURE, day_reserve,
+                                                   icon_number_width(day_reserve));
               icon_draw_number(IA_DAY_TEMPERATURE, &position, day_show, draw_y, s_fg_color);
           }
 
           // Weather icon
           {
-              const int want = weather_icon_key(s_weather_condition_id, s_isNight);
-              const int show = icon_anim_track(IA_WEATHER, want, weather_icon_for(want)->width);
+              const int reserve = weather_icon_key(s_weather_condition_id, s_isNight);
+              const int show = icon_anim_track(IA_WEATHER, reserve, weather_icon_for(reserve)->width);
               icon_draw_bitmap(IA_WEATHER, weather_icon_for(show), &position, draw_y, s_fg_color, 1);
           }
 
   } // draw weather if enabled and there is real data
 
-
-/*  
+  } else {  // ADAM mode
+  
   
 //    if (s_settings[ICON_STEPS]) {
 
@@ -685,14 +688,49 @@ static void layer_draw(Layer* layer, GContext* ctx) {
   
            if (mask & HealthServiceAccessibilityMaskAvailable) {
 
-                const Bitmap* bmp = NULL;
+             
                 HealthValue steps = health_service_sum(metric, start, end);
     
                 const Bitmap* steps_icon = &s_boots;
                 draw_bitmap(steps_icon, position, draw_y, s_fg_color);
-                position += steps_icon->width + 1;
+                position += steps_icon->width + 1;  
 
-    
+                const int steps_reserve = (int)steps;
+                const int steps_show = icon_anim_track(IA_DAY_TEMPERATURE, steps_reserve,
+                                                   icon_number_width(steps_reserve)); 
+                icon_draw_number(IA_DAY_TEMPERATURE, &position, (int)steps, draw_y, s_fg_color);
+
+                position+=4;
+
+             
+                const int reserve = weather_icon_key(0, s_isNight);
+                const int show = icon_anim_track(IA_WEATHER, reserve, weather_icon_for(reserve)->width);
+                icon_draw_bitmap(IA_WEATHER, weather_icon_for(show), &position, draw_y, s_fg_color, 1);
+
+             
+  /*           
+                const int vacation_in = 23-s_day;
+                const int vacation_left = 30-s_day;
+             
+             
+                if (vacation_in>=0) {
+                   
+                    const int vacation_reserve = vacation_in;
+                    const int vacation_show = icon_anim_track(IA_DAY_TEMPERATURE, vacation_reserve,
+                                                   icon_number_width(vacation_reserve)); 
+                    icon_draw_number(IA_DAY_TEMPERATURE, &position, vacation_reserve, draw_y, s_fg_color);
+                    
+                  
+                } else if (vacation_left>=0) {
+                  
+                    const int vacation_reserve= vacation_left;
+                    const int vacation_show = icon_anim_track(IA_DAY_TEMPERATURE, vacation_reserve,
+                                                   icon_number_width(vacation_reserve)); 
+                    icon_draw_number(IA_DAY_TEMPERATURE, &position, vacation_reserve, draw_y, s_fg_color);
+                                      
+                } */
+  /*
+             
                 char buffer[12];
                 snprintf(buffer, sizeof(buffer), "%d", (int)steps);
 
@@ -702,7 +740,7 @@ static void layer_draw(Layer* layer, GContext* ctx) {
                    draw_bitmap(bmp, position, draw_y, s_fg_color);
                    position += bmp->width + 1;
                 }             
-             
+  */           
 
            } else {
                 APP_LOG(APP_LOG_LEVEL_INFO, "Steps not available");
@@ -712,13 +750,12 @@ static void layer_draw(Layer* layer, GContext* ctx) {
        #endif         
       
 //        }
-    
-*/  
-  
+      
+  }
     if (s_settings[ICON_CONNECTION]) {
-        const int want = bluetooth_connection_service_peek() ? IA_KEY_NONE : 1;
-        const int show = icon_anim_track(IA_BLUETOOTH, want,
-                                         (want == IA_KEY_NONE) ? 0 : s_bluetooth.width);
+        const int reserve = bluetooth_connection_service_peek() ? IA_KEY_NONE : 1;
+        const int show = icon_anim_track(IA_BLUETOOTH, reserve,
+                                         (reserve == IA_KEY_NONE) ? 0 : s_bluetooth.width);
         if (show != IA_KEY_NONE) {
           
           #if defined(PBL_PLATFORM_GABBRO) // Round 2
@@ -732,14 +769,14 @@ static void layer_draw(Layer* layer, GContext* ctx) {
     }
     if (s_settings[ICON_BATTERY]) {
         BatteryChargeState charge_state = battery_state_service_peek();
-        int want = IA_KEY_NONE;
+        int reserve = IA_KEY_NONE;
         if (charge_state.is_charging) {
-            want = IA_BATTERY_CHARGING;
+            reserve = IA_BATTERY_CHARGING;
         } else if (charge_state.charge_percent <= 20) {
-            want = IA_BATTERY_LOW;
+            reserve = IA_BATTERY_LOW;
         }
-        const Bitmap* want_bmp = battery_icon_for(want);
-        const int show = icon_anim_track(IA_BATTERY, want, want_bmp ? want_bmp->width : 0);
+        const Bitmap* reserve_bmp = battery_icon_for(reserve);
+        const int show = icon_anim_track(IA_BATTERY, reserve, reserve_bmp ? reserve_bmp->width : 0);
         const Bitmap* bmp = battery_icon_for(show);
         if (bmp) {
 
@@ -1064,6 +1101,7 @@ static void in_received_handler(DictionaryIterator* iter, void* context)
 
   
 }
+static TextLayer *s_info_layer;
 
 static void main_window_load(Window* window) {
     s_layer = window_get_root_layer(window);
@@ -1088,6 +1126,30 @@ static void main_window_load(Window* window) {
             }
         }
     }
+  
+  // lost message
+  
+  
+  if (ADAM_MODE==1) {
+    
+   GRect bounds = layer_get_bounds(s_layer);
+   s_info_layer = text_layer_create(GRect(1, 31, bounds.size.w - 1, 31));
+  
+  // Set the specific message text
+  text_layer_set_text(s_info_layer, "Contact details");
+  
+  // Configure styling for readability
+  text_layer_set_font(s_info_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
+  text_layer_set_text_alignment(s_info_layer, GTextAlignmentCenter);
+    
+  text_layer_set_background_color(s_info_layer, GColorClear);
+  
+  // Add the TextLayer to the Window
+  layer_add_child(s_layer, text_layer_get_layer(s_info_layer));
+   
+ // end of lost message 
+    
+  }
 }
 
 static void main_window_unload(Window* window) {
@@ -1110,6 +1172,9 @@ static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
 }
 
 // /Weather
+
+
+
 
 static void init() {
     srand(time(NULL));
@@ -1167,6 +1232,12 @@ static void init() {
     ASSERT(s_window);
     window_set_window_handlers(s_window, (WindowHandlers) { .load = main_window_load, .unload = main_window_unload });
     window_stack_push(s_window, true);
+  
+  
+  
+  
+  
+  
 }
 
 static void deinit() {

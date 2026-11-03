@@ -285,13 +285,25 @@ static void icon_draw_number(IconId id, int* x, int value, int y, GColor color) 
         icon_draw_bitmap_at(id, &s_bmp_small_digits[IA_BMP_MINUS], cursor, y, color);
         cursor += BMP_SMALL_DIGIT_WIDTH + 1;
     }
+    if (magnitude >= 10000) {
+        if (cursor>10 && ((magnitude / 10000) % 10)==1) { cursor=cursor-1; }
+        icon_draw_bitmap_at(id, &s_bmp_small_digits[(magnitude / 10000) % 10], cursor, y, color);
+           cursor += BMP_SMALL_DIGIT_WIDTH + 1;
+    }
+    if (magnitude >= 1000) {
+        if (cursor>10 && ((magnitude / 1000) % 10)==1) { cursor=cursor-1; }
+        icon_draw_bitmap_at(id, &s_bmp_small_digits[(magnitude / 1000) % 10], cursor, y, color);
+           cursor += BMP_SMALL_DIGIT_WIDTH + 1;
+    }
     if (magnitude >= 100) {
+        if (cursor>10 && ((magnitude / 100) % 10)==1) { cursor=cursor-1; }
         icon_draw_bitmap_at(id, &s_bmp_small_digits[(magnitude / 100) % 10], cursor, y, color);
-        cursor += BMP_SMALL_DIGIT_WIDTH + 1;
+           cursor += BMP_SMALL_DIGIT_WIDTH + 1;
     }
     if (magnitude >= 10) {
+        if (cursor>10 && ((magnitude / 10) % 10)==1) { cursor=cursor-1; }
         icon_draw_bitmap_at(id, &s_bmp_small_digits[(magnitude / 10) % 10], cursor, y, color);
-        cursor += BMP_SMALL_DIGIT_WIDTH + 1;
+           cursor += BMP_SMALL_DIGIT_WIDTH + 1;
     }
     icon_draw_bitmap_at(id, &s_bmp_small_digits[magnitude % 10], cursor, y, color);
 
